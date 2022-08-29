@@ -1,0 +1,45 @@
+@import url(./fonts/index.scss);
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+
+body {
+  background: url("./assets/bgc.jpg");
+  width: 1240px;
+  object-fit: cover;
+}
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+
+* {
+  user-select: none;
+  box-sizing: border-box;
+}
+
+ul,li {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+button{
+  
+border: none;
+background-color: transparent;
+outline: none; 
+margin: 0;
+padding: 0;  
+}

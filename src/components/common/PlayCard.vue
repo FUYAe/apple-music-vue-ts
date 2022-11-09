@@ -39,16 +39,19 @@ const navigatorToAb = () => {
     },
   });
 };
+const navigatorToAbUp = () => {
+
+};
 const navigatorToAbOn = () => {
   to = true
   setTimeout(() => {
     to = false
-  }, 1000)
+  }, 300)
 
 };
 </script>
 <template>
-  <div class="m-card" @mousedown="navigatorToAbOn" @mouseup="navigatorToAb">
+  <div class="m-card" @mousedown="navigatorToAbOn" @mouseup="navigatorToAbUp" @click="navigatorToAb">
     <div class="img" ref="btm">
       <div class="when-hover">
         <div @click.stop="playMusic()" class="card-play-btn">

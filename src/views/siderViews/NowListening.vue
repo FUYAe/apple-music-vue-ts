@@ -52,7 +52,8 @@ const onMouseup = () => {
 
 const onPlay = (index: number, data: any) => {
 
-  store.playList = data;
+  store.setPlayalist(data);
+
   store.playMusicByClick(index);
 };
 const getMusicList = (id: number) => {

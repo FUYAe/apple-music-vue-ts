@@ -38,7 +38,8 @@ onUpdated(() => {
   newkw = route.query.kw as string
 })
 const playMusic = (index: number) => {
-  store.setPlayalist(store.searchR);
+
+  store.setPlayalist((store.playList = searchR.playlist));
   store.playMusicByClick(index);
 };
 const navigatorToAb = (id: number) => {
@@ -54,7 +55,7 @@ const navigatorToAb = (id: number) => {
   <div class="search-r">
     <div v-for="(item, index) in searchR.playlist" class="music-item" @click="navigatorToAb(item.al.id)">
       <img class="pic" :src="item.al.picUrl" alt="" srcset="" />
-      <Icon class="play-item" @click="playMusic(index)" size="40" color="#ff0033ee">
+      <Icon class="play-item" @click.stop="playMusic(index)" size="40" color="#ff0033ee">
         <IosPlay></IosPlay>
       </Icon>
       <div class="black"></div>

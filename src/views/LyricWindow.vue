@@ -66,15 +66,12 @@ const controlFontSize = (isExt: boolean) => {
     lrcStyle.fontSize = fontSize - 1 + "px"
   }
 };
-let isColorRev = false;
-const setFontColor = () => {
-  setTimeout(() => {
 
-    isColorRev = !isColorRev;
-    lrcStyle.color = isColorRev
-      ? "rgba(204, 204, 204, 0.897)"
-      : "rgba(20, 20, 20, 0.897)";
-  })
+const setFontColor = () => {
+  lrcStyle.color = lrcStyle.color !== "rgba(204, 204, 204, 0.897)"
+    ? "rgba(204, 204, 204, 0.897)"
+    : "rgba(20, 20, 20, 0.897)";
+
 };
 </script>
 <template>

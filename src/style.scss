@@ -12,8 +12,12 @@
 
 body {
   background: url("./assets/bgc.jpg") no-repeat center center fixed;
-height: max-content;
-
+height: 100vh;
+width: 100vw;
+position: fixed;
+top: 0;
+left: 0;
+margin: 0;
   object-fit: cover;
   overflow: hidden;
   -webkit-background-size: cover;

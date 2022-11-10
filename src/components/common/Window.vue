@@ -312,13 +312,13 @@ h1 {
 
 .edge-bottom {
   width: 100%;
-  height: 4px;
+  height: 6px;
   bottom: -2px;
 }
 
 .edge-top {
   width: 100%;
-  height: 4px;
+  height: 6px;
   top: -2px;
 }
 
@@ -329,14 +329,14 @@ h1 {
 
 .edge-left {
   height: 100%;
-  width: 4px;
+  width: 6px;
   left: -2px;
   top: 0;
 }
 
 .edge-right {
   height: 100%;
-  width: 4px;
+  width: 6px;
   right: -2px;
   top: 0;
 }

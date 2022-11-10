@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^18.11.1",
     "@vueuse/core": "^9.1.1",
     "axios": "^0.27.2",
     "font-awesome": "^4.7.0",
@@ -16,7 +17,8 @@
     "pinia-plugin-persistedstate": "^2.2.0",
     "sass": "^1.54.5",
     "vue": "^3.2.44",
-    "vue-router": "^4.1.4"
+    "vue-router": "^4.1.4",
+    "vue-tsc": "^1.0.9"
   },
   "devDependencies": {
     "@types/node": "^18.7.10",

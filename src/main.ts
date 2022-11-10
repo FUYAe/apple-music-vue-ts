@@ -18,6 +18,6 @@ import { pinia } from "@/store"
 
 const app = createApp(App)
 app.use(pinia)
-app.use(common)
+app.use(common.install)
 app.use(router)
 app.mount('#app')

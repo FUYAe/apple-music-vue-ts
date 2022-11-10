@@ -12,7 +12,7 @@
 import { computed, onMounted, onUpdated, ref, Teleport } from "vue";
 import { useStore } from "@/store";
 import default_pic from "@/assets/default_player_pic.jpg";
-
+import Image from "@/components/common/Image.vue";
 import { s_to_hs } from "@/utils";
 const store = useStore();
 let audioRef = ref<HTMLAudioElement>({} as HTMLAudioElement);
@@ -59,7 +59,7 @@ const timeUpdate = () => {
 <template>
   <div class="header-item-player" style="padding-top: 0">
     <div class="pic" @click="openLyric">
-      <img :src="store.playing.imgUrl || default_pic" alt="" srcset="" />
+      <Image :src="store.playing.imgUrl || default_pic" alt="" srcset="" />
     </div>
     <div class="music-msg">
       <div class="music-name">

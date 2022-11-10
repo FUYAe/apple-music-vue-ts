@@ -3,7 +3,13 @@ export interface RequestBaseConfig {
     realIP?: string // IPv4/IPv6 filled in X-Real-IP
     proxy?: string // HTTP proxy
 }
-
+export interface DBBG {
+    id: number,
+    name?: string,
+    size?: number,
+    data: string,
+    isSelected?: boolean
+}
 export interface MultiPageConfig {
     limit?: string | number
     offset?: string | number

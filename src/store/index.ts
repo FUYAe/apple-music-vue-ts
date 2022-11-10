@@ -1,11 +1,15 @@
 import { getSongUrlById, getLyric } from "@/axios/request";
 import { defineStore, createPinia } from "pinia"
 import { formatIndex, parseRawLrc } from "@/utils"
-
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+export { usePersistStore } from "@/store/persist"
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 const useStore = defineStore("main", {
     state: () => {
         return {
-
+            db: {} as any,
+            isShowControl: false,
             data: [] as Song[],
             control: {
                 switchModel: 0 as 0 | 1 | 2,
@@ -80,7 +84,7 @@ const useStore = defineStore("main", {
             this.playList = data
         },
 
+
     }
 })
-const pinia = createPinia()
 export { pinia, useStore }

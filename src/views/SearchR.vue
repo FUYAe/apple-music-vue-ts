@@ -9,12 +9,14 @@
  * Copyright (c) 2022 by fuya 2956903402@qq.com, All Rights Reserved. 
 -->
 <script setup lang="ts">
+import defimg from "@/assets/default_player_pic.jpg"
 import { onMounted, onUpdated, reactive } from "vue";
 import { useStore } from "@/store";
 import { Icon } from "@vicons/utils";
 import { IosPlay } from "@vicons/ionicons4";
 import { useRouter, useRoute } from "vue-router";
 import { getSearchR } from "@/axios/request";
+// import Image from "@/components/common/Image.vue";
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
@@ -50,11 +52,14 @@ const navigatorToAb = (id: number) => {
     },
   });
 };
+const slnotimg = (event: Event) => {
+  var img = event.srcElement as HTMLImageElement; img!.src = defimg; img.onerror = null;
+}
 </script>
 <template>
   <div class="search-r">
     <div v-for="(item, index) in searchR.playlist" class="music-item" @click="navigatorToAb(item.al.id)">
-      <img class="pic" :src="item.al.picUrl" alt="" srcset="" />
+      <Image class="pic" :src="item.al.picUrl" alt="" srcset="" />
       <Icon class="play-item" @click.stop="playMusic(index)" size="40" color="#ff0033ee">
         <IosPlay></IosPlay>
       </Icon>

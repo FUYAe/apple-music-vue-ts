@@ -80,6 +80,7 @@ const getBlur = () => {
   containerRef.value.style.zIndex = String(++store.currentZIndex);
 };
 onMounted(() => {
+  getBlur()
   let onMove = false;
   let offsetX: any;
   let offsetY: any;
@@ -110,6 +111,7 @@ onMounted(() => {
         Math.max(0, e.clientY - offsetY)
       )}px`;
     }
+
   }
 
   function onMouseUp() {
@@ -284,6 +286,10 @@ onMounted(() => {
     left: 10px;
     top: 10px;
     background-color: #d8dadb8e;
+  }
+
+  .to-out:hover {
+    background-color: #d8dadb;
   }
 }
 

@@ -137,6 +137,7 @@ const setFontColor = () => {
         margin: 0 5px;
         background-color: rgb(77, 77, 77);
         border-radius: 3px;
+        padding: 4px;
       }
 
       button:active {
@@ -165,8 +166,10 @@ const setFontColor = () => {
 
       .is-active {
         transition: all 0.5s;
-        color: #fff;
+        color: rgb(209, 255, 145) !important;
+        font-weight: bolder;
         transform: scale(1.3);
+        // -webkit-text-stroke: 0.05px rgb(255, 255, 255);
       }
     }
   }

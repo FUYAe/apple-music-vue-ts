@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps, onMounted, reactive } from "vue";
+import Image from "@/components/common/Image.vue";
 // const props = defineProps<{ musics: any[] }>();
 import { useStore } from "@/store";
 import { Icon } from "@vicons/utils";
@@ -13,7 +14,7 @@ const playMusic = (index: number) => {
 <template>
   <div class="search-r">
     <div v-for="(item, index) in store.playList" class="music-item">
-      <img class="pic" :src="item.al.picUrl" alt="" srcset="" />
+      <Image class="pic" :src="item.al.picUrl" alt="" srcset="" />
       <button class="play-btn">
         <Icon class="play-item" @click="playMusic(index)" size="40">
           <IosPlay></IosPlay>

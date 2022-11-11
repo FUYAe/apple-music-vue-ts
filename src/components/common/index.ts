@@ -10,7 +10,6 @@ const components = [Back, BigCard, PlayCard, ProgressBar, MusicItemBrief, Image]
 export default {
     install: (app: App, options: any) => {
         components.forEach((item) => {
-            console.log("===============")
             app.component(item.name, item)
 
         })

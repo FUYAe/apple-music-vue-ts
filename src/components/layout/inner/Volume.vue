@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import { useStore } from "@/store";
+import { useStore, usePersistStore } from "@/store";
 import { VolumeMedium, VolumeOff, VolumeMute } from "@vicons/ionicons5";
 import { Icon } from "@vicons/utils";
 const store = useStore();
-let volumeValue = ref(50);
+const persistStore = usePersistStore()
+let volumeValue = ref(persistStore.volumeValue);
 const isMute = ref(false);
 watchEffect(() => {
   if (store.audioRef) {
-    store.audioRef.volume = volumeValue.value / 100;
+    store.audioRef.volume = (persistStore.volumeValue = volumeValue.value) / 100;
   }
   if (volumeValue.value == 0) {
     isMute.value = true;
@@ -24,26 +25,22 @@ const setVolume = (volVal: number) => {
 <template>
   <div class="header-item-volume">
     <Icon @click="setVolume(0)" size="20" class="icon-header volume-down">
-      <VolumeMute v-if="isMute"></VolumeMute> <VolumeOff v-else></VolumeOff
-    ></Icon>
+      <VolumeMute v-if="isMute"></VolumeMute>
+      <VolumeOff v-else></VolumeOff>
+    </Icon>
     <div class="slider">
-      <input
-        class="input-range2"
-        type="range"
-        min="0"
-        max="100"
-        v-model="volumeValue"
-      />
+      <input class="input-range2" type="range" min="0" max="100" v-model="volumeValue" />
     </div>
-    <Icon @click="setVolume(100)" size="20" class="icon-header volume-up"
-      ><VolumeMedium></VolumeMedium
-    ></Icon>
+    <Icon @click="setVolume(100)" size="20" class="icon-header volume-up">
+      <VolumeMedium></VolumeMedium>
+    </Icon>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .header-item-volume {
   width: 200px;
+
   .icon-header {
     position: relative;
     z-index: 3;
@@ -61,12 +58,14 @@ const setVolume = (volVal: number) => {
     width: 10px;
     height: 10px;
   }
+
   div {
     display: inline-block;
     width: 70px;
     height: 5px;
     margin: 10px;
   }
+
   .slider {
     position: relative;
 

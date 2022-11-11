@@ -4,15 +4,19 @@ import Window from "@/components/common/Window.vue"
 import LyricWindow from "@/views/LyricWindow.vue";
 import Control from "./components/control/Control.vue";
 import { useStore, usePersistStore } from "@/store";
-import { onMounted } from "vue";
+import { onMounted, watchEffect, watch } from "vue";
 import { getAllData, initDB } from "./indexedDB";
 import { compressImgItem } from "./utils";
 import { Body } from "@vicons/ionicons5";
+import MiniPlayer from "./components/MiniPlayer.vue";
+import BodyLyric from "./views/BodyLyric.vue";
+import { storeToRefs } from "pinia";
 const store = useStore()
 const persistStore = usePersistStore()
 const closeLyric = () => {
   store.isShowLyric = false;
 };
+const showMiniPlayer = false
 initDB().then((db: IDBDatabase) => {
   store.db = db
   getAllData("backgroundImgs").then(({ res }) => {
@@ -35,11 +39,13 @@ onMounted(() => {
     store.isShowControl = false
   })
 })
+
+
 </script>
 
 <template>
   <KeepAlive>
-    <MainWindow />
+    <MainWindow v-show="!store.showMiniPlayer" />
   </KeepAlive>
 
   <template v-if="store.isShowLyric">
@@ -49,12 +55,29 @@ onMounted(() => {
       </Window>
     </Teleport>
   </template>
-  <Teleport to="body">
-    <Transition name="fromleft">
-      <Control @click.stop="" @mousedown.stop="" v-if="store.isShowControl" />
-    </Transition>
-  </Teleport>
-  <img @click.stop="store.isShowControl = true" class="control" src="./assets/control.png" alt="">
+  <template v-if="store.showBodyLyric">
+    <Teleport to="body">
+      <BodyLyric></BodyLyric>
+    </Teleport>
+  </template>
+  <template v-if="store.showMiniPlayer">
+    <Teleport to="#app">
+      <Window @out="store.showMiniPlayer = false" @ext="store.showMiniPlayer = false" :locksize="true" width="268px"
+        height="90px" controlbtn>
+        <MiniPlayer />
+      </Window>
+    </Teleport>
+  </template>
+  <template v-if="store.isShowControl">
+
+    <Teleport to="body">
+      <Transition name="fromleft">
+        <Control @click.stop="" @mousedown.stop="" />
+      </Transition>
+    </Teleport>
+  </template>
+  <img @click.stop="store.isShowControl = !store.isShowControl" @mousedown.stop="" class="control"
+    src="./assets/control.png" alt="">
 </template>
 
 <style lang="scss">

@@ -1,8 +1,10 @@
 <template>
-  <div class="title">{{ props.title }}</div>
-  <div class="content-box hot-play" ref="hotplay">
-    <PlayCard v-for="(item, index) in data" :imgUrl="item?.al.picUrl" :name="item?.name" :ablumid="item?.al.id"
-      @play="onPlay(index, data)" />
+  <div class="toplist">
+    <div class="title">{{ props.title }}</div>
+    <div class="content-box hot-play" ref="hotplay">
+      <PlayCard v-for="(item, index) in data" :imgUrl="item?.al.picUrl" :name="item?.name" :ablumid="item?.al.id"
+        @play="onPlay(index, data)" :au="item.ar" />
+    </div>
   </div>
 </template>
 
@@ -26,7 +28,6 @@ const hotplay = ref({} as HTMLDivElement);
 
 onMounted(async () => {
   data.value = (await getPlayList(props.listId, 0, 10)).data.songs
-  console.log('data.value', data.value)
   hotplay.value.addEventListener("mousedown", onMousedown);
 });
 
@@ -54,6 +55,10 @@ const onMouseup = () => {
 </script>
 
 <style lang="scss" scoped>
+.toplist {
+  margin-top: 16px;
+}
+
 .content-box {
   display: flex;
   justify-content: space-between;

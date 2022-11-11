@@ -99,6 +99,7 @@ const getBlur = () => {
     position: absolute;
     top: 0;
     left: 200px;
+    // z-index: 3;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     display: inline-block;

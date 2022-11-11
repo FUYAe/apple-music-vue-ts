@@ -106,8 +106,7 @@ const deleteImg = (bgImg: DBBG) => {
     
 <template>
     <div class="container">
-
-
+        <h1>背景图片</h1>
         <input type="file" accept=" .png,.jpg, .jpeg" @change="imgFileSave" name="123" id="">
         <div class="bgm-all" ref="bgAllRef">
             <div v-for="bgImgMeta in persistStore.bgImgArray" :class="{ 'selected': bgImgMeta.isSelected }"
@@ -126,6 +125,9 @@ const deleteImg = (bgImg: DBBG) => {
     padding: 10px 0;
     min-height: 455px;
     user-select: none;
+    color: #333;
+
+
 
     .bgm-all {
         display: grid;

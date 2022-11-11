@@ -10,6 +10,10 @@ const props = defineProps<{
   imgUrl: string;
   name: string;
   ablumid: number;
+  au: {
+    id: string,
+    name: string
+  }[]
 }>();
 const emits = defineEmits(["play"]);
 const store = useStore();
@@ -54,18 +58,19 @@ const navigatorToAbOn = () => {
   <div class="m-card" @mousedown="navigatorToAbOn" @mouseup="navigatorToAbUp" @click="navigatorToAb">
     <div class="img" ref="btm">
       <div class="when-hover">
-        <div @click.stop="playMusic()" class="card-play-btn">
+        <button @click.stop="playMusic()" class="card-play-btn">
           <img draggable="false" src="./assets/play.png" alt="" srcset="" />
-        </div>
-        <div class="card-more-btn">
+        </button>
+        <button class="card-more-btn">
           <img draggable="false" src="./assets/more.png" alt="" srcset="" />
-        </div>
+        </button>
       </div>
       <img draggable="false" :src="loadingImg ? imgUrl : ''" alt="" srcset="" />
     </div>
 
     <div class="info">
       <p class="info1">{{ name }}</p>
+      <p class="info2"><span v-for="i in au">{{ i.name }}&nbsp;</span></p>
     </div>
   </div>
 </template>
@@ -119,7 +124,8 @@ $M: 10px;
         height: 15px;
       }
 
-      div {
+      div,
+      button {
         padding: 4.5px;
         width: 25px;
         height: 25px;
@@ -129,15 +135,25 @@ $M: 10px;
         border-radius: 50%;
       }
 
-      div:hover {
+      button:hover {
         background-color: #fa233b;
+
+      }
+
+      button:active {
+        transform: scale(0.9);
+
       }
 
       .card-play-btn {
+        display: block;
+        outline: none;
         left: 5px;
       }
 
       .card-more-btn {
+        display: block;
+        outline: none;
         right: 5px;
       }
     }
@@ -160,13 +176,14 @@ $M: 10px;
       margin: 0;
       padding-left: 2px;
       font-weight: 500;
+      color: rgb(2, 2, 2);
     }
 
     .info2 {
       text-align: left;
       font-size: 12px;
       margin: 0;
-      color: rgba(0, 0, 0, 0.405);
+      color: rgb(85, 85, 85);
       padding-left: 2px;
       font-weight: 500;
     }

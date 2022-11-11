@@ -8,6 +8,8 @@ pinia.use(piniaPluginPersistedstate)
 const useStore = defineStore("main", {
     state: () => {
         return {
+            showBodyLyric: false,
+            showMiniPlayer: false,
             db: {} as any,
             isShowControl: false,
             data: [] as Song[],
@@ -33,7 +35,8 @@ const useStore = defineStore("main", {
             audioRef: {} as HTMLAudioElement,
             searchR: [] as any[],
             bigCard: [] as any[],
-            currentZIndex: 1000
+            currentZIndex: 1000,
+            currentLrcid: 0
 
         }
 
@@ -49,7 +52,7 @@ const useStore = defineStore("main", {
             this.playing.isPlaying = true
             const song = await getSongUrlById(+id)
             this.playing.musicSrc = song.data.data[0]?.url
-            if (this.isShowLyric) {
+            if (this.isShowLyric || this.showBodyLyric) {
                 this.setLyric()
             }
 
@@ -74,9 +77,10 @@ const useStore = defineStore("main", {
 
         },
         async setLyric() {
-            if (this.playing.id == 0) return
+            if (this.playing.id == 0 || this.currentLrcid === this.playing.id) return
             const res = await getLyric(this.playing.id)
             this.lyric = parseRawLrc(res.data.lrc.lyric)
+            this.currentLrcid = this.playing.id
 
 
         },

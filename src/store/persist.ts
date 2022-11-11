@@ -8,7 +8,12 @@ const usePersistStore = defineStore("persist", {
 
     return {
       bgImg: "",
-      bgImgArray: [] as any[]
+      volumeValue: 100,
+      bgImgArray: [] as any[],
+      lrcStyle: {
+        fontSize: "14px",
+        color: "rgba(204, 204, 204, 0.897)",
+      }
     }
 
   }

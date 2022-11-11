@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Menu from "./inner/Menu.vue";
+import { useStore } from "@/store"
+const store = useStore()
 </script>
 <template>
   <div class="sider">
     <div class="header">
-      <div class="w-out"></div>
-      <div class="w-narrow"></div>
+      <div class="w-out" @click="store.showMiniPlayer = true"></div>
+      <div class="w-narrow" @click="store.showMiniPlayer = true"></div>
       <div class="w-ext"></div>
     </div>
     <Menu></Menu>

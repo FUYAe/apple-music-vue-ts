@@ -1,5 +1,5 @@
 
-import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteLocationOptions } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteLocationNormalized, createWebHistory } from 'vue-router'
 
 const routes = [{
     path: '/',
@@ -41,7 +41,7 @@ const routes = [{
 }]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
 
 })

@@ -15,12 +15,12 @@ const playMusic = () => {
 </script>
 <template>
   <div class="music-item" :style="{ backgroundColor: index % 2 == 0 ? '#ddd2' : '#ddd4' }">
-    <button>
+    <IBtn class="play-btn">
       <span>{{ props.index }}</span>
       <Icon size="20" class="icon" @click="playMusic">
         <IosPlay></IosPlay>
       </Icon>
-    </button>
+    </IBtn>
     <span class="song-name">{{ props.name }}</span>
     <span class="dt">{{ s_to_hs(props.long / 1000) }}</span>
     <button>
@@ -58,20 +58,22 @@ export default {
     width: 40%;
   }
 
-  button:first-child {
+  .play-btn {
     width: 30px;
 
     .icon {
       display: none;
       color: #ff0033;
+
     }
 
     span {
       color: #000;
+      font-size: 13px;
     }
   }
 
-  button:first-child:hover {
+  .play-btn:hover {
     .icon {
       display: inline;
     }
@@ -82,10 +84,16 @@ export default {
   }
 }
 
+.play-btn:active {
+  .icon {
+    transform: scale(0.9);
+  }
+}
+
 .music-item:hover {
   background-color: #ddd6;
 
-  button:first-child {
+  .play-btn {
 
 
     .icon {

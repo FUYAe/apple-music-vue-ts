@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, onMounted, reactive } from "vue";
-import Image from "@/components/common/Image.vue";
+import Image from "@/plugin/components/Image.vue";
 // const props = defineProps<{ musics: any[] }>();
 import { useStore } from "@/store";
 import { Icon } from "@vicons/utils";

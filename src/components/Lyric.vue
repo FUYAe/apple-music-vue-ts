@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import { useStore, usePersistStore } from "@/store";
+import { computed } from "@vue/reactivity";
 import { storeToRefs } from "pinia"
-import { onMounted, reactive, ref, watchEffect } from "vue";
+import { onMounted, onUnmounted, onUpdated, reactive, ref, watch, watchEffect } from "vue";
 const store = useStore();
 const persistStore = usePersistStore()
 const ulOfLrcRef = ref({} as HTMLUListElement);
 const bgBlurRef = ref({} as HTMLDivElement);
-const currentLrcIndex = ref(0);
+
 const { lrcStyle } = storeToRefs(persistStore)
+const { currentLrcIndex } = storeToRefs(store)
 
-const isCurrentLrc = (time: number, index: number) => {
-  let isCurrent =
-    time < store.playing.currentTime &&
-    store.playing.currentTime <
-    (store.lyric[index + 1] ? store.lyric[index + 1][0] : 1000000000);
-  if (isCurrent) {
-    currentLrcIndex.value = index;
-  }
-  return isCurrent;
-};
 
+// const isCurrentLrc = computed((time: number, index: number) => {
+//   let isCurrent =
+//     time < store.playing.currentTime &&
+//     store.playing.currentTime <
+//     (store.lyric[index + 1] ? store.lyric[index + 1][0] : 1000000000);
+//   if (isCurrent) {
+//     currentLrcIndex.value = index;
+//   }
+//   return isCurrent;
+// })
 const onWheel = (e: any) => {
   const bgBlurStyle = window.getComputedStyle(bgBlurRef.value);
   const ulStyle = window.getComputedStyle(ulOfLrcRef.value);
@@ -37,7 +39,12 @@ const onMoveover = (e: MouseEvent) => {
 const onMoveout = (e: MouseEvent) => {
   bgBlurRef.value.removeEventListener("mousewheel", onWheel);
 };
-onMounted(() => {
+
+let lis: HTMLLIElement[];
+let old: number = 0
+let interval: any = null
+onMounted(async () => {
+  await store.setLyric()
   bgBlurRef.value.addEventListener("mouseover", onMoveover);
   bgBlurRef.value.addEventListener("mouseout", onMoveout);
   watchEffect(() => {
@@ -52,8 +59,75 @@ onMounted(() => {
     let bgHight = parseFloat(bgBlurStyle.height);
     ulOfLrcRef.value.style.transform = "translateY(" + (bgHight / 2 - flag) + "px)"
   });
-});
+  lis = document.querySelectorAll(".lyricall>li") as unknown as HTMLLIElement[]
+  let timer: any = null
+  interval = setInterval(() => {
+    if (store.lyric.lenght === 0) return
+    if (store.lyric[currentLrcIndex.value] === undefined) return
+    let crt = store.playing.currentTime
+    if (crt >= old) {
 
+      if (store.lyric[currentLrcIndex.value][0] <= crt) {
+        if (store.lyric.lenght == currentLrcIndex.value) return
+        currentLrcIndex.value++
+      }
+    } else {
+      if (store.lyric[currentLrcIndex.value][0] > crt) {
+        if (store.lyric.lenght == currentLrcIndex.value) return
+        currentLrcIndex.value--
+        return
+      }
+    }
+    // if (store.lyric[currentLrcIndex.value][0] - 2 > crt) {
+    //   if (currentLrcIndex.value == 0) return
+    //   currentLrcIndex.value--
+    // }
+    old = store.playing.currentTime
+  }
+  )
+
+
+  watch(currentLrcIndex, (newVal, oldVal) => {
+    if (lis.length === 0) {
+      return
+    }
+    lis[oldVal || 0].classList.remove("is-active")
+
+    lis[newVal].classList.add("is-active")
+
+
+
+
+  }, { immediate: true })
+
+})
+onUpdated(() => {
+  lis = document.querySelectorAll(".lyricall>li") as unknown as HTMLLIElement[]
+})
+onUnmounted(() => {
+  clearInterval(interval)
+})
+function debounce(fn: any, time: number, immediate: boolean) {
+  let timer: any
+  return function () {
+    if (immediate) {
+      clearTimeout(timer);
+      let now = !timer;
+      timer = setTimeout(() => {
+        timer = null;
+      }, time)
+      if (now) {
+        fn()
+      };
+    } else {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        fn()
+      }, time);
+    }
+  }
+
+}
 const controlFontSize = (isExt: boolean) => {
   const fontSize = parseInt(lrcStyle.value.fontSize)
   if (isExt) {
@@ -96,12 +170,11 @@ const setFontColor = () => {
             p-id="3495" fill="#ffffff"></path>
         </svg></button>
     </div>
-    <ul ref="ulOfLrcRef">
+    <ul ref="ulOfLrcRef" class="lyricall">
       <li :style="lrcStyle">
         {{ store.playing.name + " " + store.playing.au }}
       </li>
-      <li class="lyricli" v-for="(item, index) in store.lyric" :class="{ 'is-active': isCurrentLrc(item[0], index) }"
-        :style="lrcStyle" :key="item[0]">
+      <li class="lyricli" v-for="(item, index) in store.lyric" :style="lrcStyle" :key="String(item[0]) + index">
         {{ item[1] }}
       </li>
     </ul>
@@ -109,13 +182,6 @@ const setFontColor = () => {
 </template>
 
 <style lang="scss" scoped>
->img {
-  width: 100%;
-  height: 100%;
-  // object-fit: contain;
-  transform: scale(1.1);
-}
-
 .bg {
 
   height: 100%;
@@ -160,6 +226,8 @@ const setFontColor = () => {
     position: absolute;
     transition: all 1s;
 
+
+
     li {
       color: rgba(204, 204, 204, 0.897);
       font-size: 14px;
@@ -167,6 +235,10 @@ const setFontColor = () => {
       word-spacing: 2px;
       font-family: youyuan;
       text-align: center;
+    }
+
+    li:first-child {
+      font-size: 18px;
     }
 
     .is-active {

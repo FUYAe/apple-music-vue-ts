@@ -1,11 +1,11 @@
 <template>
-  <img :src="props.src" alt="" @error="slnotimg" srcset="">
+  <img :src="props.src || defimg" alt="" @error="slnotimg" srcset="">
 </template>
 
 <script setup lang="ts">
-import defimg from "@/assets/default_player_pic.jpg"
+import defimg from "@/assets/apple_music.png"
 const props = defineProps<{
-  src: string
+  src?: string
   alter?: string
 }>()
 const slnotimg = (event: Event) => {

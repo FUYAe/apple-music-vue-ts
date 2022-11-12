@@ -1,36 +1,61 @@
 
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteLocationOptions } from 'vue-router'
 
 const routes = [{
     path: '/',
-    component: () => import("../views/siderViews/NowListening.vue"),
+    name: "root",
+    component: () => import("../views/main_window/sider_views/NowListening.vue"),
+    meta: { isCache: true }
 
 }, {
     path: "/browse",
-    component: () => import("../views/Browse.vue")
+    name: "browse",
+    component: () => import("../views/main_window/sider_views/Browse.vue"),
+    meta: { isCache: false }
 
 }, {
     path: "/search",
     name: "search",
-    component: () => import("../views/SearchR.vue"),
-    props: (route: { query: { kw: any } }) => ({ query: route.query.kw })
-
-
+    component: () => import("../views/main_window/other_views/SearchR.vue"),
+    props: (route: { query: { kw: any } }) => ({ query: route.query.kw }),
+    meta: { isCache: false }
 
 },
 {
     path: "/playlist",
     name: "playlist",
-    component: () => import("../views/siderViews/PlayList.vue"),
+    component: () => import("../views/main_window/sider_views/PlayList.vue"),
+    meta: { isCache: true }
 
 
 }, {
     path: "/ablum",
     name: "ablum",
-    component: () => import("../views/Ablum.vue")
+    component: () => import("../views/main_window/other_views/Ablum.vue"),
+    meta: { isCache: false },
+}, {
+    path: "/artist",
+    name: "artist",
+    component: () => import("../views/main_window/other_views/AuthorInfo.vue"),
+    meta: { isCache: true }
 }]
 
-export default createRouter({
+const router = createRouter({
     history: createWebHashHistory(),
     routes,
+
 })
+function handleCache(to: RouteLocationNormalized, from: RouteLocationNormalized) {
+    if (to.path === "/") {
+        from.meta.isCache = false
+    }
+    if (from.path === "/") {
+        to.meta.isCache = false
+    }
+}
+router.beforeEach((to, from) => {
+    // console.log('to', to)
+    // console.log('from', from)
+    handleCache(to, from)
+})
+export default router

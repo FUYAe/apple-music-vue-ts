@@ -13,8 +13,10 @@ const usePersistStore = defineStore("persist", {
       lrcStyle: {
         fontSize: "14px",
         color: "rgba(204, 204, 204, 0.897)",
-      }
+      },
+      recents: [] as Song[]
     }
+
 
   }
   ,

@@ -2,9 +2,10 @@ import { getSongUrlById, getLyric } from "@/axios/request";
 import { defineStore, createPinia } from "pinia"
 import { formatIndex, parseRawLrc } from "@/utils"
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-export { usePersistStore } from "@/store/persist"
+import { usePersistStore } from "@/store/persist"
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
+
 const useStore = defineStore("main", {
     state: () => {
         return {
@@ -18,25 +19,29 @@ const useStore = defineStore("main", {
                 isSync: false
                 // 0 默认 1 循环播放 2 随机播放
             },
+            currentLrcIndex: 0,
             isShowLyric: false,
             lyric: "" as any,
             isPlaying: false,
             playList: [] as any[],
+
             playing: {
                 id: 0,
                 isPlaying: false,
                 musicSrc: "",
                 name: "Apple Music",
                 au: "",
+                auId: 0,
                 imgUrl: "",
                 index: 0,
                 currentTime: 0
             },
-            audioRef: {} as HTMLAudioElement,
+            audioRef: {} as HTMLAudioElement | null,
             searchR: [] as any[],
             bigCard: [] as any[],
             currentZIndex: 1000,
-            currentLrcid: 0
+            currentLrcid: 0,
+
 
         }
 
@@ -48,11 +53,26 @@ const useStore = defineStore("main", {
         }
     },
     actions: {
+        addTorecent(song: Song) {
+            const persist = usePersistStore(pinia)
+            if (persist.recents.length >= 10) {
+                persist.recents.pop()
+            }
+            for (let s in persist.recents) {
+                if (persist.recents[s].id === song.id) {
+                    persist.recents.splice(Number(s), 1)
+                    break
+                }
+            }
+            persist.recents.unshift(song)
+        },
         async playMusic(id: number) {
             this.playing.isPlaying = true
             const song = await getSongUrlById(+id)
             this.playing.musicSrc = song.data.data[0]?.url
+
             if (this.isShowLyric || this.showBodyLyric) {
+                this.currentLrcIndex = 0
                 this.setLyric()
             }
 
@@ -65,14 +85,20 @@ const useStore = defineStore("main", {
             this.playing.name = target.name
             this.playing.index = index
             this.playing.au = target.ar[0].name
+            this.playing.auId = target.ar[0].id
 
 
             this.playMusic(target.id)
+            this.addTorecent(JSON.parse(JSON.stringify(target)))
 
         },
         async playMusicInList(index: number) {
             const length = this.playList.length
             index = formatIndex(this.control.switchModel, index, length, this.control.isSync)
+            if (this.playList.length <= index) {
+
+                index = 0
+            }
             this.playMusicByClick(index)
 
         },
@@ -91,4 +117,4 @@ const useStore = defineStore("main", {
 
     }
 })
-export { pinia, useStore }
+export { pinia, useStore, usePersistStore }

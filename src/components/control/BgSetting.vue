@@ -4,7 +4,6 @@ import { useStore, usePersistStore } from '@/store';
 import { compressImgItem } from "@/utils"
 import { storeToRefs } from "pinia"
 import { deleteData, getAllData, updateData, getDataById, openTable } from "@/indexedDB"
-import { DBBG } from '@/types';
 const store = useStore()
 const persistStore = usePersistStore()
 
@@ -13,8 +12,8 @@ const persistStore = usePersistStore()
 const imgFileSave = (e: any) => {
     const reader = new FileReader()
     for (let file of e.target.files) {
-        if (file.size > 4194304) {
-            alert("文件不能大于4mb!!")
+        if (file.size > 3194304) {
+            alert("文件不能大于3mb!!")
             return
         }
         reader.readAsDataURL(file)

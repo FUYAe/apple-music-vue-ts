@@ -1,11 +1,14 @@
 <template>
-  <div class="bodylrc">
-    <Lyric />
-  </div>
+  <Teleport to="body">
+    <div class="bodylrc">
+      <Lyric />
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import Lyric from './Lyric.vue';
+import Window from "@/plugin/components/Window.vue";
+import Lyric from '../../components/Lyric.vue';
 </script>
 
 <style lang="scss" scoped>

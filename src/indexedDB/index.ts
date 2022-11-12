@@ -1,7 +1,7 @@
 import { pinia, useStore } from "../store";
 const store = useStore(pinia)
 import { compressImgItem } from "@/utils"
-import { Msg } from "@/types";
+
 const initDB = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
 

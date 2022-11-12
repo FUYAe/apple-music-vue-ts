@@ -13,11 +13,15 @@ import { createApp } from 'vue'
 import './style.scss'
 import App from './App.vue'
 import common from './components/common'
+import components from "@/plugin/components"
+import directives from '@/plugin/directives'
 import router from "@/router"
 import { pinia } from "@/store"
 
 const app = createApp(App)
 app.use(pinia)
-app.use(common.install)
+app.use(common)
+app.use(components)
+app.use(directives)
 app.use(router)
 app.mount('#app')

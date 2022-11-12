@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { getSongsByArId } from "@/axios/request";
 import { useStore } from "@/store";
+
 import { computed } from "@vue/reactivity";
 import { onMounted, reactive } from "vue";
+import { useRouter } from "vue-router";
 const props = defineProps<{
   pic: string;
   name: string;
   arid: number;
 }>();
+const router = useRouter()
 const store = useStore();
 const paly1music = () => {
   getSongsByArId(props.arid).then((res) => {
@@ -16,13 +19,16 @@ const paly1music = () => {
     store.playMusicByClick(Math.floor(Math.random() * res.data.songs.length));
   });
 };
+const gotoArInfo = () => {
+  router.push({ name: "artist", query: { id: props.arid } })
+}
 </script>
 <template>
-  <div class="m-card">
+  <div class="m-card" @click="gotoArInfo">
     <div class="img">
       <div class="when-hover">
         <div class="card-play-btn">
-          <img @click="paly1music" src="./assets/play.png" alt="" srcset="" />
+          <img @click.stop="paly1music" src="./assets/play.png" alt="" srcset="" />
         </div>
         <div class="card-more-btn">
           <img src="./assets/more.png" alt="" srcset="" />
@@ -116,6 +122,7 @@ $M: 10px;
     min-height: 50px;
     background-color: #dededeba;
     padding: 5px;
+
     h2 {
       margin: 0;
       padding-top: 10px;

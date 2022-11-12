@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useStore } from "@/store";
+import { useStore, usePersistStore } from "@/store";
 import { getTopLists, getTop, getPlayList, get } from "@/axios/request";
 import { onMounted, reactive, ref } from "vue";
 import TopList from "@/components/TopList.vue";
 const store = useStore();
+const persistStore = usePersistStore()
+
 function accessMusic() {
   getTopLists().then((res) => {
     data.topLists = res.data.list.slice(0, 4);
@@ -29,6 +31,7 @@ onMounted(async () => {
     <div class="content-box now-listening">
       <BigCard v-for="item in store.bigCard" :pic="item.img1v1Url" :name="item.name" :arid="item.id"></BigCard>
     </div>
+    <TopList title="最近播放" :srcdata="persistStore.recents" v-if="persistStore.recents.length"></TopList>
     <template v-for="(list, outIndex) in data.topLists">
       <TopList :title="list.name" :listId="list.id" />
     </template>

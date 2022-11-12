@@ -13,7 +13,7 @@ import { onMounted, onUnmounted, ref } from "vue";
 import WindowHeader from "@/components/layout/Header.vue";
 import WindowSider from "@/components/layout/Sider.vue";
 import { useStore } from "@/store";
-const mainContainerRef = ref({} as HTMLDivElement);
+const mainContainerRef = ref<HTMLDivElement | null>(null);
 const store = useStore();
 function onDrag(e: MouseEvent) {
   const container = document.querySelector(".container") as HTMLDivElement;
@@ -39,6 +39,8 @@ function onMousedown() {
 function onMouseup() {
   document.removeEventListener("mousemove", onDrag);
 }
+
+
 const makeitMove = () => {
   const dragElement = document.querySelector(".drag-bar") as HTMLDivElement;
   dragElement.addEventListener("mousedown", onMousedown);
@@ -55,7 +57,7 @@ onUnmounted(() => {
   clearListener();
 });
 const getBlur = () => {
-  mainContainerRef.value.style.zIndex = String(++store.currentZIndex);
+  mainContainerRef.value!.style.zIndex = String(++store.currentZIndex);
 };
 </script>
 
@@ -66,7 +68,12 @@ const getBlur = () => {
     <div class="content-box">
       <WindowHeader />
       <div class="main-content">
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+          <keep-alive :include="['NowListening']">
+            <component v-if="$route.meta.isCache" :is="Component" />
+          </keep-alive>
+          <component v-if="!$route.meta.isCache" :is="Component" />
+        </router-view>
       </div>
     </div>
   </div>

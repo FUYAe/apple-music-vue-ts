@@ -11,10 +11,7 @@ const props = defineProps<{
   imgUrl: string;
   name: string;
   ablumid: number;
-  au: {
-    id: string,
-    name: string
-  }[]
+  pubtime: string
 }>();
 const emits = defineEmits(["play"]);
 const store = useStore();
@@ -70,16 +67,16 @@ const navigatorToAbOn = () => {
     </div>
 
     <div class="info">
-      <p class="info1">{{ name }}</p>
+      <p class="info1">{{ name }}·专辑</p>
       <p class="info2">
-        <AuName class="au" v-for="i in au" :id="i.id">{{ i.name }}</AuName>
+        <span>{{ pubtime }}</span>
       </p>
     </div>
   </div>
 </template>
 <script lang="ts">
 export default {
-  name: "PlayCard",
+  name: "AlbumItem",
   components: { Image }
 };
 </script>

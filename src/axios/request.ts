@@ -6,6 +6,22 @@ export function getSongUrlById(id: number) {
         `/song/url?id=${id}`
     )
 }
+export function getArtistSongsById(id: number) {
+    return request.get(
+        `/artist/top/song?id=${id}`
+    )
+}
+export function getArtistDesc(id: number) {
+    return request.get(
+        `/artist/desc?id=${id}`
+    )
+}
+export function getArtistAlbum(id: number, limit = 10) {
+    return request.get(
+        `/artist/album?id=${id}&limit=${limit}`
+    )
+}
+
 export function getSongsByArId(id: number) {
     return request.get(
         "/artist/top/song?id=" + id

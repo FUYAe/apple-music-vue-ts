@@ -8,9 +8,9 @@ import { BackwardFilled, ForwardFilled } from "@vicons/antd";
 const store = useStore();
 const playOrStop = () => {
   if (store.playing.isPlaying) {
-    store.audioRef.pause();
+    store.audioRef && store.audioRef.pause();
   } else {
-    store.audioRef.play().then();
+    store.audioRef && store.audioRef.play().then();
   }
   store.playing.isPlaying = !store.playing.isPlaying;
 };
@@ -30,30 +30,24 @@ const setSwitchModel = (switchModel: 0 | 1 | 2) => {
 </script>
 <template>
   <div class="header-item-control">
-    <Icon
-      class="icon-header"
-      :class="{ 'is-active': store.control.switchModel == 2 }"
-      size="20"
-      @click="setSwitchModel(2)"
-      ><IosShuffle></IosShuffle
-    ></Icon>
+    <Icon class="icon-header" :class="{ 'is-active': store.control.switchModel == 2 }" size="20"
+      @click="setSwitchModel(2)">
+      <IosShuffle></IosShuffle>
+    </Icon>
     <Icon class="icon-header" size="20" @click="playPreMusic">
-      <BackwardFilled></BackwardFilled
-    ></Icon>
-    <Icon class="icon-header" size="20" @click="playOrStop"
-      ><IosPlay v-if="!store.playing.isPlaying"></IosPlay>
+      <BackwardFilled></BackwardFilled>
+    </Icon>
+    <Icon class="icon-header" size="20" @click="playOrStop">
+      <IosPlay v-if="!store.playing.isPlaying"></IosPlay>
       <IosPause v-else></IosPause>
     </Icon>
-    <Icon class="icon-header" size="20" @click="playNextMusic"
-      ><ForwardFilled></ForwardFilled
-    ></Icon>
-    <Icon
-      class="icon-header"
-      :class="{ 'is-active': store.control.switchModel == 1 }"
-      size="20"
-      @click="setSwitchModel(1)"
-      ><IosSync></IosSync
-    ></Icon>
+    <Icon class="icon-header" size="20" @click="playNextMusic">
+      <ForwardFilled></ForwardFilled>
+    </Icon>
+    <Icon class="icon-header" :class="{ 'is-active': store.control.switchModel == 1 }" size="20"
+      @click="setSwitchModel(1)">
+      <IosSync></IosSync>
+    </Icon>
   </div>
 </template>
 
@@ -69,6 +63,7 @@ const setSwitchModel = (switchModel: 0 | 1 | 2) => {
   .icon-header:hover {
     opacity: 0.7;
   }
+
   .is-active {
     color: #ff0033;
     opacity: 1;

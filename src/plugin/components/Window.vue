@@ -302,7 +302,7 @@ export default {
 }
 
 .drag-bar {
-  height: 30px;
+  height: 22px;
   width: 100%;
   background-color: #d8dadb;
 
@@ -323,11 +323,11 @@ export default {
 
 
 .content-w {
-  height: calc(100% - 30px);
+  height: calc(100% - 22px);
   width: 100%;
   background-color: #f1f3f4;
   position: absolute;
-  top: 30px;
+  top: 22px;
   left: 0;
 
   //   overflow-y: auto;
@@ -337,7 +337,7 @@ export default {
     height: 20px;
     border-radius: 50%;
     left: 10px;
-    top: 10px;
+    top: 6px;
     padding: 2px;
     background-color: #d8dadb8e;
   }
@@ -448,7 +448,7 @@ h1 {
   height: 11px;
   background-color: #9b9b9b;
   border-radius: 50px;
-  top: 10px;
+  top: 6px;
   box-shadow: 0 0 1px 0.3px rgba(0, 0, 0, 0.2);
 }
 

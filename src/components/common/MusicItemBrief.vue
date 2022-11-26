@@ -3,6 +3,7 @@ import { s_to_hs } from "@/utils";
 import { Icon } from "@vicons/utils";
 import { IosPlay, IosMore } from "@vicons/ionicons4";
 import { defineEmits } from "vue";
+import IBtn from "@/plugin/components/IBtn.vue";
 const emits = defineEmits(["play"]);
 const props = defineProps<{
   index: number;

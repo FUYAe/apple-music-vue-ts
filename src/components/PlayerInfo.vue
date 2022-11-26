@@ -23,16 +23,17 @@ const currentTime = ref();
 const timeDuration = ref();
 onMounted(() => {
   setInterval(async () => {
-    if (!store.audioRef!) return;
+    if (!store.audioRef) return;
     progress.value =
-      (store.audioRef!.currentTime / store.audioRef!.duration) * 100;
-    currentTime.value = s_to_hs(store.audioRef!.currentTime || 0);
-    timeDuration.value = s_to_hs(store.audioRef!.duration || 0);
+      (store.audioRef.currentTime / store.audioRef.duration) * 100;
+    currentTime.value = s_to_hs(store.audioRef.currentTime || 0);
+    timeDuration.value = s_to_hs(store.audioRef.duration || 0);
     if (progress.value == 100) {
       store.playMusicInList(store.playing.index + 1);
     }
   }, 300);
 });
+
 
 const progressChanged = (newProgress: number, isPuse = true) => {
   if (!store.playing.musicSrc) return;

@@ -7,7 +7,6 @@ const components = [Image, Window, AuName]
 export default {
   install: (app: App, options: any) => {
     components.forEach((item) => {
-      console.log("item", item)
       app.component(item.name, item)
 
     })

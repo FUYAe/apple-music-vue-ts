@@ -5,13 +5,13 @@ import { VolumeMedium, VolumeOff, VolumeMute } from "@vicons/ionicons5";
 import { Icon } from "@vicons/utils";
 const store = useStore();
 const persistStore = usePersistStore()
-let volumeValue = ref(persistStore.volumeValue);
+
 const isMute = ref(false);
 watchEffect(() => {
   if (store.audioRef) {
-    store.audioRef.volume = (persistStore.volumeValue = volumeValue.value) / 100;
+    store.audioRef.volume = (persistStore.volumeValue = persistStore.volumeValue) / 100;
   }
-  if (volumeValue.value == 0) {
+  if (persistStore.volumeValue == 0) {
     isMute.value = true;
   } else {
     isMute.value = false;
@@ -19,7 +19,7 @@ watchEffect(() => {
 });
 const setVolume = (volVal: number) => {
   if (volVal < 0 || volVal > 100) return;
-  volumeValue.value = volVal;
+  persistStore.volumeValue = volVal;
 };
 </script>
 <template>
@@ -29,7 +29,7 @@ const setVolume = (volVal: number) => {
       <VolumeOff v-else></VolumeOff>
     </Icon>
     <div class="slider">
-      <input class="input-range2" type="range" min="0" max="100" v-model="volumeValue" />
+      <input class="input-range2" type="range" min="0" max="100" v-model="persistStore.volumeValue" />
     </div>
     <Icon @click="setVolume(100)" size="20" class="icon-header volume-up">
       <VolumeMedium></VolumeMedium>

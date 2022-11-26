@@ -8,6 +8,7 @@ import LyricWindow from "@/views/window/LyricWindow.vue";
 import Control from "@/views/insert/Control.vue";
 import MiniPlayer from "@/views/window/MiniPlayer.vue";
 import BodyLyric from "@/views/insert/BodyLyric.vue";
+import { addKeyEvent } from "@/utils/keyControl"
 const store = useStore()
 const persistStore = usePersistStore()
 initDB().then((db: IDBDatabase) => {
@@ -31,11 +32,65 @@ const init_bgImg = () => {
     document.body.style.backgroundImage = "url(" + persistStore.bgImg + ")"
   }
 }
+const addKeyListener = () => {
+  addKeyEvent("Space", (e) => {
 
+    if (store.playing.isPlaying) {
+      store.audioRef && store.audioRef.pause();
+    } else {
+      store.audioRef && store.audioRef.play().then();
+    }
+    store.playing.isPlaying = !store.playing.isPlaying;
+  })
+  addKeyEvent("ArrowUp", (e) => {
+
+    if (persistStore.volumeValue >= 100) return
+    if (store.audioRef) {
+      let f = persistStore.volumeValue + 5
+      if (f > 100) {
+        f = 100
+      }
+      persistStore.volumeValue = f
+    }
+
+  })
+  addKeyEvent("ArrowDown", (e) => {
+    if (persistStore.volumeValue <= 0) return
+    if (store.audioRef) {
+      let f = persistStore.volumeValue - 5
+      if (f < 0) {
+        f = 0
+      }
+      persistStore.volumeValue = f
+    }
+  })
+  addKeyEvent("ArrowRight", (e) => {
+    if (!store.playing.musicSrc || !store.playing.isPlaying || !store.audioRef) return;
+    let f = store.audioRef!.currentTime + 2
+    if (f > store.audioRef!.duration) {
+      f = store.audioRef!.duration
+    }
+    store.audioRef!.currentTime = f
+
+  })
+  addKeyEvent("ArrowLeft", (e) => {
+    if (!store.playing.musicSrc || !store.playing.isPlaying || !store.audioRef) return;
+    let f = store.audioRef!.currentTime - 2
+    if (f > store.audioRef!.duration) {
+      f = store.audioRef!.duration
+    }
+    store.audioRef!.currentTime = f
+
+
+  })
+
+
+}
 
 onMounted(() => {
   init_bgImg()
   close_controlban_when_itLostBlur()
+  addKeyListener()
 })
 
 

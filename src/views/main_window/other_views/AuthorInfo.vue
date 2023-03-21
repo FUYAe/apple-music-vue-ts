@@ -21,7 +21,7 @@
       <h3>热门歌曲</h3>
       <div class="songs">
 
-        <MusicItemBrief @play="playMusic(index)" v-for="song, index in artist.songs" :index="index + 1"
+        <MusicItemBrief :song="song" @play="playMusic(index)" v-for="song, index in artist.songs" :index="index + 1"
           :name="song.name" :long="song.dt">
         </MusicItemBrief>
       </div>
@@ -35,12 +35,12 @@ import Back from "@/components/common/Back.vue";
 import MusicItemBrief from "@/components/common/MusicItemBrief.vue";
 import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "@/store";
+import { useMusicStore } from "@/store";
 import { artist_album } from "@/types/interface";
 import AlbumItem from "@/components/common/AlbumItem.vue";
 
 const route = useRoute()
-const store = useStore()
+const musicStore = useMusicStore()
 const artist = reactive({
   info: {
     al: {} as Al,
@@ -63,14 +63,14 @@ onMounted(async () => {
   // linitSongs
 })
 const playMusic = (index: number) => {
-  store.playList = artist.songs
-  store.playMusicInList(index)
+  musicStore.playQueue = artist.songs
+  musicStore.playMusicByClick(index)
 
 }
 const onPlayAtAl = (id: number) => {
   get("/album?id=" + id).then((res) => {
-    store.playList = res.data.songs;
-    store.playMusicInList(0)
+    musicStore.playQueue = res.data.songs;
+    musicStore.playMusicByClick(0)
 
   });
 }

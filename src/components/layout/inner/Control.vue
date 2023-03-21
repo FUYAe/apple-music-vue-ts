@@ -1,36 +1,37 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useStore } from "@/store";
+import { useStore, useMusicStore } from "@/store";
 
 import { Icon } from "@vicons/utils";
 import { IosPlay, IosShuffle, IosSync, IosPause } from "@vicons/ionicons4";
 import { BackwardFilled, ForwardFilled } from "@vicons/antd";
 const store = useStore();
+const musicStore = useMusicStore()
 const playOrStop = () => {
-  if (store.playing.isPlaying) {
+  if (musicStore.playing.isPlaying) {
     store.audioRef && store.audioRef.pause();
   } else {
     store.audioRef && store.audioRef.play().then();
   }
-  store.playing.isPlaying = !store.playing.isPlaying;
+  musicStore.playing.isPlaying = !musicStore.playing.isPlaying;
 };
 const playNextMusic = () => {
-  store.playMusicInList(store.playing.index + 1);
+  musicStore.playMusicInList(musicStore.playing.index + 1);
 };
 const playPreMusic = () => {
-  store.playMusicInList(store.playing.index - 1);
+  musicStore.playMusicInList(musicStore.playing.index - 1);
 };
 const setSwitchModel = (switchModel: 0 | 1 | 2) => {
-  if (switchModel == store.control.switchModel) {
-    store.control.switchModel = 0;
+  if (switchModel == musicStore.playControl.switchModel) {
+    musicStore.playControl.switchModel = 0;
     return;
   }
-  store.control.switchModel = switchModel;
+  musicStore.playControl.switchModel = switchModel;
 };
 </script>
 <template>
   <div class="header-item-control">
-    <Icon class="icon-header" :class="{ 'is-active': store.control.switchModel == 2 }" size="20"
+    <Icon class="icon-header" :class="{ 'is-active': musicStore.playControl.switchModel == 2 }" size="20"
       @click="setSwitchModel(2)">
       <IosShuffle></IosShuffle>
     </Icon>
@@ -38,13 +39,13 @@ const setSwitchModel = (switchModel: 0 | 1 | 2) => {
       <BackwardFilled></BackwardFilled>
     </Icon>
     <Icon class="icon-header" size="20" @click="playOrStop">
-      <IosPlay v-if="!store.playing.isPlaying"></IosPlay>
+      <IosPlay v-if="!musicStore.playing.isPlaying"></IosPlay>
       <IosPause v-else></IosPause>
     </Icon>
     <Icon class="icon-header" size="20" @click="playNextMusic">
       <ForwardFilled></ForwardFilled>
     </Icon>
-    <Icon class="icon-header" :class="{ 'is-active': store.control.switchModel == 1 }" size="20"
+    <Icon class="icon-header" :class="{ 'is-active': musicStore.playControl.switchModel == 1 }" size="20"
       @click="setSwitchModel(1)">
       <IosSync></IosSync>
     </Icon>

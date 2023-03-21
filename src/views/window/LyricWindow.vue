@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useStore } from "@/store";
+import { useMusicStore } from "@/store";
 import { ref } from "vue";
 import Lyric from "../../components/Lyric.vue";
 
-const store = useStore();
+const musicStore = useMusicStore();
 const closeLyric = () => {
-  store.isShowLyric = false;
+  musicStore.lyricControl.isShowLyric = false;
 };
 </script>
 <template>
@@ -14,12 +14,11 @@ const closeLyric = () => {
       <div v-bind="$attrs" class="lyric" :style="{
         backdropFilter: 'blur(6px)',
       }">
-        <img :src="store.playing.imgUrl" alt="" />
+        <img :src="musicStore.playing.imgUrl" alt="" />
         <Lyric />
       </div>
     </Window>
   </Teleport>
-
 </template>
 
 <style lang="scss" scoped>

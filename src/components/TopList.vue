@@ -3,17 +3,17 @@
     <div class="title">{{ props.title }}</div>
     <div class="content-box hot-play" ref="hotplay">
       <div v-if="!data.length" class="skeleton" style="background-color: rgb(130, 36, 36);"></div>
-      <PlayCard v-for="(item, index) in data" :imgUrl="item?.al.picUrl" :name="item?.name" :ablumid="item?.al.id"
-        @play="onPlay(index, data)" :au="item.ar" />
+      <PlayCard :song="item" v-for="(item, index) in data" :imgUrl="item?.al.picUrl" :name="item?.name"
+        :ablumid="item?.al.id" @play="onPlay(index, data)" :au="item.ar" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useStore } from "@/store";
+import { useMusicStore } from "@/store";
 import { getTopLists, getTop, getPlayList, get } from "@/axios/request";
 import { onMounted, reactive, ref } from "vue";
-const store = useStore();
+const musicStore = useMusicStore();
 const props = defineProps<{
   title: string,
   listId?: number,
@@ -22,8 +22,8 @@ const props = defineProps<{
 const data = ref([] as Song[])
 
 const onPlay = (index: number, data: any) => {
-  store.setPlayalist(data);
-  store.playMusicByClick(index);
+  musicStore.setPlayQueue(data);
+  musicStore.playMusicByClick(index);
 };
 const hotplay = ref({} as HTMLDivElement);
 

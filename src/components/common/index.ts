@@ -7,7 +7,7 @@ import Back from "./Back.vue"
 import { App } from 'vue'
 const components = [Back, BigCard, PlayCard, ProgressBar, MusicItemBrief]
 export default {
-    install: (app: App, options: any) => {
+    install: (app: App<any>): any => {
         components.forEach((item) => {
             app.component(item.name, item)
 

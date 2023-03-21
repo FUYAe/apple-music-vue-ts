@@ -11,13 +11,13 @@
 <script setup lang="ts">
 import defimg from "@/assets/default_player_pic.jpg"
 import { onMounted, onUpdated, reactive } from "vue";
-import { useStore } from "@/store";
+import { useMusicStore } from "@/store";
 import { Icon } from "@vicons/utils";
 import { IosPlay } from "@vicons/ionicons4";
 import { useRouter, useRoute } from "vue-router";
 import { getSearchR } from "@/axios/request";
 // import Image from "@/components/common/Image.vue";
-const store = useStore();
+const musicStroe = useMusicStore();
 const router = useRouter();
 const route = useRoute();
 const searchR = reactive({
@@ -41,8 +41,8 @@ onUpdated(() => {
 })
 const playMusic = (index: number) => {
 
-  store.setPlayalist((store.playList = searchR.playlist));
-  store.playMusicByClick(index);
+  musicStroe.setPlayQueue((musicStroe.playQueue = searchR.playlist));
+  musicStroe.playMusicByClick(index);
 };
 const navigatorToAb = (id: number) => {
   router.push({

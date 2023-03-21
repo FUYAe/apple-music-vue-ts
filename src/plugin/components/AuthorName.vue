@@ -8,10 +8,13 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router"
-const props = defineProps<{ id: number }>()
+const props = defineProps<{ artist?: { id: number } }>()
 const router = useRouter()
 const gotoAuInfo = () => {
-  router.push({ name: "artist", query: { id: props.id } })
+  if (props.artist) {
+
+    router.push({ name: "artist", query: { id: props.artist.id } })
+  }
 }
 </script>
 <script lang="ts">

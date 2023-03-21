@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import { useStore, usePersistStore } from "@/store";
+import { useStore, usePersistStore, useConfigStore } from "@/store";
 import { VolumeMedium, VolumeOff, VolumeMute } from "@vicons/ionicons5";
 import { Icon } from "@vicons/utils";
 const store = useStore();
 const persistStore = usePersistStore()
-
+const configStore = useConfigStore()
 const isMute = ref(false);
 watchEffect(() => {
   if (store.audioRef) {
-    store.audioRef.volume = (persistStore.volumeValue = persistStore.volumeValue) / 100;
+    store.audioRef.volume = configStore.getVolume / 100;
   }
-  if (persistStore.volumeValue == 0) {
+  if (configStore.getVolume == 0) {
     isMute.value = true;
   } else {
     isMute.value = false;
@@ -19,7 +19,7 @@ watchEffect(() => {
 });
 const setVolume = (volVal: number) => {
   if (volVal < 0 || volVal > 100) return;
-  persistStore.volumeValue = volVal;
+  configStore.setVolume(volVal)
 };
 </script>
 <template>
@@ -29,7 +29,7 @@ const setVolume = (volVal: number) => {
       <VolumeOff v-else></VolumeOff>
     </Icon>
     <div class="slider">
-      <input class="input-range2" type="range" min="0" max="100" v-model="persistStore.volumeValue" />
+      <input class="input-range2" type="range" min="0" max="100" v-model="configStore.getVolume" />
     </div>
     <Icon @click="setVolume(100)" size="20" class="icon-header volume-up">
       <VolumeMedium></VolumeMedium>

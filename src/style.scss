@@ -9,21 +9,19 @@
   -webkit-text-size-adjust: 100%;
 }
 
-
 body {
   background: url("./assets/bgc.jpg") no-repeat center center fixed;
-height: 100vh;
-width: 100vw;
-position: fixed;
-top: 0;
-left: 0;
-margin: 0;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
   object-fit: cover;
   overflow: hidden;
   -webkit-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-
+  -o-background-size: cover;
+  background-size: cover;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -32,31 +30,32 @@ margin: 0;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-  overflow: hidden
-  ;
-
+  overflow: hidden;
 }
-
-
 
 * {
   user-select: none;
   box-sizing: border-box;
 }
 
-ul,li {
+ul,
+li {
   list-style: none;
   padding: 0px;
   margin: 0px;
 }
-button{
-  
-border: none;
-background-color: transparent;
-outline: none; 
-margin: 0;
-padding: 0;  
+button {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  margin: 0;
+  padding: 0;
 }
-h1,h2,h3,h4,h5,p{
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
   margin: 0;
 }

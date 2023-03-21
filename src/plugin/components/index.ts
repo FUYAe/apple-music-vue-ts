@@ -5,7 +5,7 @@ import { App } from 'vue'
 import AuName from "./AuthorName.vue"
 const components = [Image, Window, AuName]
 export default {
-  install: (app: App, options: any) => {
+  install: (app: App<any>): any => {
     components.forEach((item) => {
       app.component(item.name, item)
 

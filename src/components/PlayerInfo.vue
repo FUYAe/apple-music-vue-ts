@@ -10,13 +10,13 @@
 -->
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, onUpdated, ref, Teleport } from "vue";
-import { useStore } from "@/store";
+import { useMusicStore, useStore } from "@/store";
 import default_pic from "@/assets/default_player_pic.jpg";
 import Image from "@/plugin/components/Image.vue";
 import { s_to_hs } from "@/utils";
 import Control from "./layout/inner/Control.vue";
-const store = useStore();
-
+const musicStore = useMusicStore();
+const store = useStore()
 let progressLen = ref(200);
 let progress = ref(0);
 const currentTime = ref();
@@ -29,44 +29,44 @@ onMounted(() => {
     currentTime.value = s_to_hs(store.audioRef.currentTime || 0);
     timeDuration.value = s_to_hs(store.audioRef.duration || 0);
     if (progress.value == 100) {
-      store.playMusicInList(store.playing.index + 1);
+      musicStore.playMusicInList(musicStore.playing.index + 1);
     }
   }, 300);
 });
 
 
 const progressChanged = (newProgress: number, isPuse = true) => {
-  if (!store.playing.musicSrc) return;
+  if (!musicStore.playing.musicSrc) return;
   store.audioRef!.currentTime = store.audioRef!.duration * (newProgress / 100);
   if (isPuse) {
     store.audioRef!.pause();
   } else {
     store.audioRef!.play();
-    store.playing.isPlaying = true;
+    musicStore.playing.isPlaying = true;
   }
 };
 
 
 const openLyric = () => {
-  store.isShowLyric = true;
-  store.setLyric();
+  musicStore.lyricControl.isShowLyric = true;
+  musicStore.setLyric();
 };
 
 onUnmounted(() => {
-  store.showBodyLyric = false
+  musicStore.lyricControl.isShowBodyLyric = false
 })
 
 </script>
 <template>
   <div class="header-item-player" style="padding-top: 0">
     <div class="pic" @click="openLyric">
-      <Image :src="store.playing.imgUrl || default_pic" alt="" srcset="" />
+      <Image :src="musicStore.playing.imgUrl || default_pic" alt="" srcset="" />
     </div>
     <div class="music-msg">
       <div class="music-name">
         <p>
-          <span>{{ store.playing.name }}</span><span>&nbsp;&nbsp;&nbsp;</span>
-          <AuName :id="store.playing.auId">{{ store.playing.au }}</AuName>
+          <span>{{ musicStore.playing.name }}</span><span>&nbsp;&nbsp;&nbsp;</span>
+          <AuName :id="musicStore.playing.auId">{{ musicStore.playing.au }}</AuName>
         </p>
       </div>
 
@@ -80,7 +80,6 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
-
 </template>
 
 <style lang="scss" scoped>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useStore, usePersistStore } from "@/store";
 import { onMounted } from "vue";
 import { getAllData, initDB } from "./indexedDB";
 import { compressImgItem } from "./utils";
@@ -9,63 +8,59 @@ import Control from "@/views/insert/Control.vue";
 import MiniPlayer from "@/views/window/MiniPlayer.vue";
 import BodyLyric from "@/views/insert/BodyLyric.vue";
 import { addKeyEvent } from "@/utils/keyControl"
+import { useStore, usePersistStore, useConfigStore, useMusicStore } from "@/store";
 const store = useStore()
 const persistStore = usePersistStore()
+const configStore = useConfigStore()
+const musicStore = useMusicStore()
+
 initDB().then((db: IDBDatabase) => {
   store.db = db
   getAllData("backgroundImgs").then(({ res }) => {
-    persistStore.bgImgArray = []
+    configStore.bgImgThumbnails = []
     for (let img of res.result) {
       compressImgItem(img).then((img) => {
-        persistStore.bgImgArray.unshift(img)
+        configStore.bgImgThumbnails.unshift(img)
       })
     }
   })
 })
 const close_controlban_when_itLostBlur = () => {
   document.body?.addEventListener("mousedown", () => {
-    store.isShowControl = false
+    store.isShowControlPanel = false
   })
 }
 const init_bgImg = () => {
-  if (persistStore.bgImg) {
-    document.body.style.backgroundImage = "url(" + persistStore.bgImg + ")"
+  if (configStore.getBgImage) {
+    document.styleSheets[0].insertRule(" body{background:url(" + configStore.getBgImage + ") no-repeat center center fixed  !important;}")
   }
 }
 const addKeyListener = () => {
   addKeyEvent("Space", (e) => {
 
-    if (store.playing.isPlaying) {
+    if (musicStore.playing.isPlaying) {
       store.audioRef && store.audioRef.pause();
     } else {
       store.audioRef && store.audioRef.play().then();
     }
-    store.playing.isPlaying = !store.playing.isPlaying;
+    musicStore.playing.isPlaying = !musicStore.playing.isPlaying;
   })
   addKeyEvent("ArrowUp", (e) => {
 
-    if (persistStore.volumeValue >= 100) return
+    if (configStore.getVolume >= 100) return
     if (store.audioRef) {
-      let f = persistStore.volumeValue + 5
-      if (f > 100) {
-        f = 100
-      }
-      persistStore.volumeValue = f
+      configStore.increaseVolume()
     }
 
   })
   addKeyEvent("ArrowDown", (e) => {
-    if (persistStore.volumeValue <= 0) return
+    if (configStore.getVolume <= 0) return
     if (store.audioRef) {
-      let f = persistStore.volumeValue - 5
-      if (f < 0) {
-        f = 0
-      }
-      persistStore.volumeValue = f
+      configStore.decreaseVolume()
     }
   })
   addKeyEvent("ArrowRight", (e) => {
-    if (!store.playing.musicSrc || !store.playing.isPlaying || !store.audioRef) return;
+    if (!musicStore.playing.musicSrc || !musicStore.playing.isPlaying || !store.audioRef) return;
     let f = store.audioRef!.currentTime + 2
     if (f > store.audioRef!.duration) {
       f = store.audioRef!.duration
@@ -74,7 +69,7 @@ const addKeyListener = () => {
 
   })
   addKeyEvent("ArrowLeft", (e) => {
-    if (!store.playing.musicSrc || !store.playing.isPlaying || !store.audioRef) return;
+    if (!musicStore.playing.musicSrc || !musicStore.playing.isPlaying || !store.audioRef) return;
     let f = store.audioRef!.currentTime - 2
     if (f > store.audioRef!.duration) {
       f = store.audioRef!.duration
@@ -98,21 +93,21 @@ onMounted(() => {
 
 <template>
   <KeepAlive>
-    <component v-show="!store.showMiniPlayer" :is="MainWindow"></component>
+    <component v-show="!store.isShowMiniPlayer" :is="MainWindow"></component>
   </KeepAlive>
-  <template v-if="store.isShowLyric">
+  <template v-if="musicStore.lyricControl.isShowLyric">
     <LyricWindow></LyricWindow>
   </template>
-  <template v-if="store.showBodyLyric">
+  <template v-if="musicStore.lyricControl.isShowBodyLyric">
     <BodyLyric></BodyLyric>
   </template>
-  <template v-if="store.showMiniPlayer">
+  <template v-if="store.isShowMiniPlayer">
     <MiniPlayer />
   </template>
-  <template v-if="store.isShowControl">
+  <template v-if="store.isShowControlPanel">
     <Control @click.stop="" @mousedown.stop="" />
   </template>
-  <img @click.stop="store.isShowControl = !store.isShowControl" @mousedown.stop="" class="control-btn"
+  <img @click.stop="store.isShowControlPanel = !store.isShowControlPanel" @mousedown.stop="" class="control-btn"
     src="./assets/control.png" alt="">
 </template>
 

@@ -6,8 +6,8 @@ const store = useStore()
 <template>
   <div class="sider">
     <div class="header">
-      <div class="w-out" @click="store.showMiniPlayer = true"></div>
-      <div class="w-narrow" @click="store.showMiniPlayer = true"></div>
+      <div class="w-out" @click="store.isShowMiniPlayer = true"></div>
+      <div class="w-narrow" @click="store.isShowMiniPlayer = true"></div>
       <div class="w-ext"></div>
     </div>
     <Menu></Menu>

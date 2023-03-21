@@ -15,13 +15,30 @@ import App from './App.vue'
 import common from './components/common'
 import components from "@/plugin/components"
 import directives from '@/plugin/directives'
+// import hoverMenu from '@/plugin/HoverMenu'
 import router from "@/router"
 import { pinia } from "@/store"
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $hoverMenu: {
+      show: (userProps: {
+        location: {
+          x: number
+          y: number
+        },
+        menus: {
+          title: string
+          onClick: (event: MouseEvent) => {}
+        }[]
+      }) => void
+    }
+  }
+}
 
 const app = createApp(App)
 app.use(pinia)
 app.use(common)
 app.use(components)
-app.use(directives)
+// app.use(hoverMenu)
 app.use(router)
 app.mount('#app')

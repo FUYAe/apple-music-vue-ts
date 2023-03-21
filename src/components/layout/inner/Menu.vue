@@ -4,6 +4,14 @@ import { reactive, ref } from "vue";
 import { getSearchR, getSearchSuggestions } from "@/axios/request";
 import { useStore } from "@/store";
 import { watch } from "vue";
+import img_nowlistening from "@/assets/siderIcon/nowlistening.png"
+import img_browse from "@/assets/siderIcon/browse.png"
+import img_radar from "@/assets/siderIcon/outline-radar.png"
+import img_recent from "@/assets/siderIcon/recent.png"
+import img_microphone from "@/assets/siderIcon/microphone.png"
+import img_note from "@/assets/siderIcon/note.png"
+import img_smalllist from "@/assets/siderIcon/smalllist.png"
+import img_viewlist from "@/assets/siderIcon/Viewlist.png"
 const store = useStore();
 const router = useRouter();
 const navigateTo = (path: string) => {
@@ -11,6 +19,33 @@ const navigateTo = (path: string) => {
     path,
   });
 };
+const menus = reactive([
+  {
+    title: "Apple Music",
+    list: [
+      { id: "nowtolisten", img: img_nowlistening, text: "现在就听", path: "/", disable: false, ckecked: true },
+      { id: "browse", img: img_browse, text: "浏览", path: "/", disable: true, ckecked: false },
+      { id: "radar", img: img_radar, text: "广播", path: "/", disable: true, ckecked: false },
+    ]
+  },
+  {
+    title: "资料库",
+    list: [
+      { id: "recent", img: img_recent, text: "最近添加", path: "/", disable: true, ckecked: false },
+      { id: "microphone", img: img_microphone, text: "艺人", path: "/", disable: true, ckecked: false },
+      { id: "note", img: img_note, text: "收藏", path: "/collection", disable: false, ckecked: false },
+    ]
+  },
+  {
+    title: "播放列表",
+    list: [
+      { id: "smalllist", img: img_smalllist, text: "所有播放列表", path: "/", disable: true, ckecked: false },
+      { id: "viewlist", img: img_viewlist, text: "播放列表", path: "/playlist", disable: false, ckecked: false },
+    ]
+  }
+
+]
+)
 const searchText = ref("");
 const searchMusic = () => {
   if (!searchText.value) return;
@@ -60,85 +95,23 @@ const onSearchInputFocus = () => {
         </ul>
       </div>
     </div>
-    <label for="">Apple Music</label>
-    <div class="block">
-      <label for="nowtolisten">
-        <li @click="navigateTo('/')">
-          <input type="radio" name="a" id="nowtolisten" checked />
-          <div>
-            <img src="@/assets/siderIcon/nowlistening.png" alt="" srcset="" />
-          </div>
-          <span>现在就听</span>
-        </li>
-      </label>
-      <label for="browse">
-        <li @click="navigateTo('/browse')">
-          <input type="radio" name="a" id="browse" />
-          <div>
-            <img src="@/assets/siderIcon/browse.png" alt="" srcset="" />
-          </div>
-          <span>浏览</span>
-        </li>
-      </label>
-      <label for="radar">
-        <li>
-          <input type="radio" name="a" id="radar" />
-          <div>
-            <img src="@/assets/siderIcon/outline-radar.png" alt="" srcset="" />
-          </div>
-          <span>广播</span>
-        </li>
-      </label>
-    </div>
-    <label for="">资料库</label>
-    <div class="block">
-      <label for="recent">
-        <li>
-          <input type="radio" name="a" id="recent" />
-          <div>
-            <img src="@/assets/siderIcon/recent.png" alt="" srcset="" />
-          </div>
-          <span>最新添加</span>
-        </li>
-      </label>
-      <label for="microphone">
-        <li>
-          <input type="radio" name="a" id="microphone" />
-          <div>
-            <img src="@/assets/siderIcon/microphone.png" alt="" srcset="" />
-          </div>
-          <span>艺人</span>
-        </li>
-      </label><label for="note">
-        <li>
-          <input type="radio" name="a" id="note" />
-          <div>
-            <img src="@/assets/siderIcon/note.png" alt="" srcset="" />
-          </div>
-          <span>歌曲</span>
-        </li>
-      </label>
-    </div>
-    <label for="">播放列表</label>
-    <div class="block">
-      <label for="smalllist">
-        <li>
-          <input type="radio" name="a" id="smalllist" />
-          <div>
-            <img src="@/assets/siderIcon/smalllist.png" alt="" srcset="" />
-          </div>
-          <span>所有播放列表</span>
-        </li>
-      </label><label for="viewlist">
-        <li @click="navigateTo('/playlist')">
-          <input type="radio" name="a" id="viewlist" />
-          <div>
-            <img src="@/assets/siderIcon/Viewlist.png" alt="" srcset="" />
-          </div>
-          <span>播放列表</span>
-        </li>
-      </label>
-    </div>
+    <template v-for="menu in menus ">
+      <label for="">{{ menu.title }}</label>
+      <div class="block">
+        <label :for="item.id" v-for="item in menu.list">
+          <li @click="item.disable || navigateTo(item.path)">
+            <input type="radio" name="a" :id="item.id" :checked="item.ckecked" :disabled="item.disable" />
+            <div>
+              <img :src="item.img" alt="" srcset="" />
+            </div>
+            <span :class="{ 'is-disable': item.disable }">{{ item.text }}</span>
+          </li>
+        </label>
+
+      </div>
+
+    </template>
+
   </div>
 </template>
 
@@ -199,6 +172,8 @@ const onSearchInputFocus = () => {
         box-sizing: content-box;
         padding: 4px 0 4px 20px;
       }
+
+
     }
   }
 
@@ -263,6 +238,11 @@ const onSearchInputFocus = () => {
       border-radius: 5px;
       background-color: #3636361a;
     }
+  }
+
+  .is-disable {
+
+    color: #aaa !important;
   }
 }
 </style>

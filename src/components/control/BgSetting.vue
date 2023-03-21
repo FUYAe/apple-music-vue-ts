@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, watchEffect } from 'vue'
-import { useStore, usePersistStore } from '@/store';
+import { useConfigStore, usePersistStore } from '@/store';
 import { compressImgItem } from "@/utils"
 import { storeToRefs } from "pinia"
 import { deleteData, getAllData, updateData, getDataById, openTable } from "@/indexedDB"
-const store = useStore()
+const configStore = useConfigStore()
 const persistStore = usePersistStore()
 
 
@@ -19,7 +19,7 @@ const imgFileSave = (e: any) => {
         reader.readAsDataURL(file)
         let isBreak = false
         reader.onload = function () {
-            persistStore.bgImg = this.result as string
+            configStore.bgImage = this.result as string
             const that = this
             getAllData("backgroundImgs").then(({ res, objStore }) => {
                 let items = []
@@ -43,12 +43,12 @@ const imgFileSave = (e: any) => {
                         console.log("图片存成功")
                         document.body.style.backgroundImage = "url(" + that.result + ")"
                         compressImgItem(img as any).then((img) => {
-                            persistStore.bgImgArray.forEach(item => {
+                            configStore.bgImgThumbnails.forEach(item => {
                                 if (item.isSelected) {
                                     item.isSelected = false
                                 }
                             })
-                            persistStore.bgImgArray.push(img)
+                            configStore.bgImgThumbnails.push(img)
                         })
 
                     }
@@ -69,17 +69,17 @@ const changeBgImg = (bgImg: any) => {
     openTable("backgroundImgs").then(res => {
         const req = res.get(bgImg.id)
         let currentId = null
-        persistStore.bgImgArray.forEach(item => {
+        configStore.bgImgThumbnails.forEach(item => {
             if (item.isSelected) {
                 currentId = item.id
                 item.isSelected = false
             }
         })
 
-        let index = persistStore.bgImgArray.indexOf(bgImg)
-        persistStore.bgImgArray[index].isSelected = true
+        let index = configStore.bgImgThumbnails.indexOf(bgImg)
+        configStore.bgImgThumbnails[index].isSelected = true
         req.onsuccess = function (event) {
-            persistStore.bgImg = req.result.data
+            configStore.bgImage = req.result.data
             document.body.style.backgroundImage = "url(" + req.result.data + ")"
             res.put(Object.assign(req.result, { isSelected: true }))
         }
@@ -96,8 +96,8 @@ const changeBgImg = (bgImg: any) => {
 }
 const deleteImg = (bgImg: DBBG) => {
     deleteData("backgroundImgs", bgImg.id).then(() => {
-        let index = persistStore.bgImgArray.indexOf(bgImg)
-        persistStore.bgImgArray.splice(index, 1)
+        let index = configStore.bgImgThumbnails.indexOf(bgImg)
+        configStore.bgImgThumbnails.splice(index, 1)
     })
 }
 
@@ -108,7 +108,7 @@ const deleteImg = (bgImg: DBBG) => {
         <h1>背景图片</h1>
         <input type="file" accept=" .png,.jpg, .jpeg" @change="imgFileSave" name="123" id="">
         <div class="bgm-all" ref="bgAllRef">
-            <div v-for="bgImgMeta in persistStore.bgImgArray" :class="{ 'selected': bgImgMeta.isSelected }"
+            <div v-for="bgImgMeta in configStore.bgImgThumbnails" :class="{ 'selected': bgImgMeta.isSelected }"
                 :index="bgImgMeta.id">
                 <img :src="bgImgMeta.data" @click="changeBgImg(bgImgMeta)" alt="" draggable="false">
                 <button @click="deleteImg(bgImgMeta)">删除</button>

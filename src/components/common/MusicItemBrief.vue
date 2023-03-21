@@ -1,18 +1,62 @@
 <script setup lang="ts">
+
 import { s_to_hs } from "@/utils";
 import { Icon } from "@vicons/utils";
 import { IosPlay, IosMore } from "@vicons/ionicons4";
-import { defineEmits } from "vue";
+import { defineEmits, getCurrentInstance } from "vue";
 import IBtn from "@/plugin/components/IBtn.vue";
-const emits = defineEmits(["play"]);
+import { showHoverMenu, showPrompt } from "@/plugin";
+import { useStore, usePersistStore, useMusicStore } from "@/store";
+const store = useStore()
+const persistStore = usePersistStore()
+const emits = defineEmits(["play", "clickmore"]);
 const props = defineProps<{
   index: number;
   name: string;
   long: number;
+  song?: any;
+  customMore?: boolean
 }>();
 const playMusic = () => {
   emits("play");
 };
+const musicStore = useMusicStore();
+const inst = getCurrentInstance()
+const showMore = (e: MouseEvent) => {
+  if (props.customMore) {
+    emits("clickmore", e)
+    return
+  }
+  showHoverMenu(
+    {
+      location: {
+        x: e.x,
+        y: e.y
+      },
+      menus: [{
+        title: "收藏", onClick: (e: MouseEvent) => {
+          persistStore.addCollection(props.song).then(res => {
+            showPrompt({
+              msg: res.msg
+            })
+          }).catch(err => {
+            showPrompt({
+              msg: err.msg,
+              type: "err"
+            })
+          })
+
+        }
+      }, {
+        title: "下一首播放", onClick: (e: MouseEvent) => {
+
+          musicStore.playQueue.splice(musicStore.playing.index + 1, 0, props.song)
+
+        }
+      }]
+    }
+  )
+}
 </script>
 <template>
   <div class="music-item" :style="{ backgroundColor: index % 2 == 0 ? '#ddd2' : '#ddd4' }">
@@ -24,7 +68,7 @@ const playMusic = () => {
     </IBtn>
     <span class="song-name">{{ props.name }}</span>
     <span class="dt">{{ s_to_hs(props.long / 1000) }}</span>
-    <button>
+    <button @click.stop="showMore">
       <Icon size="20" color="#ff0033" class="icon">
         <IosMore></IosMore>
       </Icon>

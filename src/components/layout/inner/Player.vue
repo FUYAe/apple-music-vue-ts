@@ -10,10 +10,11 @@
 -->
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useStore } from "@/store";
+import { useMusicStore, useStore } from "@/store";
 import { s_to_hs } from "@/utils";
 import PlayerInfo from "@/components/PlayerInfo.vue";
-const store = useStore();
+const musicStore = useMusicStore();
+const store = useStore()
 let audioRef = ref<HTMLAudioElement | null>(null);
 
 
@@ -38,14 +39,12 @@ onMounted(() => {
 
 
 const timeUpdate = () => {
-  store.playing.currentTime = audioRef.value!.currentTime * 1000;
+  musicStore.playing.currentTime = audioRef.value!.currentTime * 1000;
 };
 </script>
 <template>
-
   <PlayerInfo v-bind="$attrs"></PlayerInfo>
-  <audio @timeupdate="timeUpdate" ref="audioRef" :src="store.playing.musicSrc" controls autoplay></audio>
-
+  <audio @timeupdate="timeUpdate" ref="audioRef" :src="musicStore.playing.musicSrc" controls autoplay></audio>
 </template>
 
 <style lang="scss" scoped>

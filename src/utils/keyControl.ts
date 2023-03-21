@@ -1,66 +1,139 @@
+
 interface Fn {
   (e: KeyboardEvent): void
 }
-let ismoreclick = false
-let moreclick = [] as string[]
-let keyStack = [] as { key: string | string[], fns: Fn[] }[]
-function clearMoreClick() {
-  moreclick = []
+type KeyRaw = {
+  [k in KeyboardEvent["code"]]: {
+    fns: Fn[],
+    type: "single" | "combination"
+  }
 }
-function handleKeypress(keyboardevent: KeyboardEvent) {
-  keyStack.forEach(keyEventRaw => {
-    if (keyEventRaw.key === "*") {
+type CombinationKeyRaw = {
+  [k in KeyboardEvent["code"]]: {
+    fns: Fn[],
+    type: "single" | "combination",
+    keydowns: boolean[],
+    awaitKeys: string[],
+    finalKey: string
+  }
+}
+
+
+
+
+const singleKeyStack = {} as KeyRaw;
+const combinationKeyStack = {} as CombinationKeyRaw;
+const currentActiveKey = {} as any
+let historyKey = ""
+const clearWhenKeyUp = (e: KeyboardEvent) => {
+  historyKey = ""
+  let upKeyCode = e.code.toLowerCase()
+  if (upKeyCode in currentActiveKey) {
+    let cbmk = combinationKeyStack[currentActiveKey[upKeyCode]]
+    cbmk.keydowns[cbmk.awaitKeys.indexOf(upKeyCode)] = false
+    delete currentActiveKey[upKeyCode]
+  }
+}
+const isExectiveCombinationKey = (exkeys: any[]) => {
+  let flag = true
+  for (let i of exkeys) {
+    if (i === false) {
+      flag = false
+    }
+  }
+  return flag
+}
+
+function handleSingleKey(keyboardevent: KeyboardEvent) {
+  for (let key in singleKeyStack) {
+    let keyEventRaw = singleKeyStack[key]
+    if (key === "*") {
       keyEventRaw.fns.forEach(fn => fn(keyboardevent))
-    } else if (Array.isArray(keyEventRaw.key)) {
-      if (keyEventRaw.key[0].toLowerCase() === keyboardevent.code.toLowerCase()) {
-        ismoreclick = true
-        moreclick.push(keyEventRaw.key[0])
-        addEventListener("keyup", clearMoreClick)
-      }
-      if (ismoreclick) {
-        moreclick.push(keyboardevent.key)
-      }
-      if (JSON.stringify(moreclick) === JSON.stringify(keyEventRaw.key)) {
-        keyEventRaw.fns.forEach(fn => fn(keyboardevent))
-      }
-    } else if (typeof keyEventRaw.key === "string") {
-      if (keyboardevent.code.toLowerCase() == keyEventRaw.key.toLowerCase()) {
+    }
+    if (key.toLowerCase() === keyboardevent.code.toLowerCase()) {
+      if (keyEventRaw.type === "single") {
         keyEventRaw.fns.forEach(fn => fn(keyboardevent))
       }
     }
-  })
+  }
 }
-function initKeyPress(fn: any) {
-  document.addEventListener("keydown", fn)
+function handleCombinationKey(keyboardevent: KeyboardEvent) {
+  if (historyKey === keyboardevent.code) return
+  historyKey = keyboardevent.code
+  for (let key in combinationKeyStack) {
+    let keyEventRaw = combinationKeyStack[key]
+    let awaitKeys = keyEventRaw.awaitKeys
+    let finalKey = keyEventRaw.finalKey
+    for (let k in awaitKeys) {
+      let keyCode = awaitKeys[k].toLowerCase()
+      if (keyCode === keyboardevent.code.toLowerCase()) {
+        if (k == "0" || keyEventRaw.keydowns[Number(k) - 1] !== false) {
+          keyEventRaw.keydowns[k] = true
+          currentActiveKey[keyCode] = key
+        }
+      }
+    }
+    if (isExectiveCombinationKey(keyEventRaw.keydowns) && finalKey.toLowerCase() === keyboardevent.code.toLowerCase()) {
+      keyEventRaw.fns.forEach(fn => fn(keyboardevent))
+      historyKey = ""
+    }
+  }
+}
+
+const keydownFns = [handleSingleKey, handleCombinationKey] as any[]
+const keyupFns = [clearWhenKeyUp] as any[]
+
+
+function handleKeydown(e: KeyboardEvent) {
+  keydownFns.forEach(fn => fn(e))
+}
+
+function handleKeyup(e: KeyboardEvent) {
+  keyupFns.forEach(fn => fn(e))
+}
+function initKeyEvent() {
+  document.addEventListener("keydown", handleKeydown)
+  document.addEventListener("keyup", handleKeyup)
+}
+
+function hasExist(key: string) {
+  if (key in combinationKeyStack) {
+    return true
+  }
+  return false
+}
+function pushSingleKeyStack(key: string, fn: Fn) {
+  if (hasExist(key)) {
+    singleKeyStack[key].fns.push(fn)
+  } else {
+    singleKeyStack[key] = {
+      fns: [fn],
+      type: "single"
+    }
+  }
+}
+function pushCombinationKeyStack(key: string, fn: Fn) {
+  if (hasExist(key)) {
+    combinationKeyStack[key].fns.push(fn)
+  } else {
+    let awaitKeys = key.split(".")
+    awaitKeys.pop()
+    combinationKeyStack[key] = {
+      fns: [fn],
+      type: "combination",
+      keydowns: new Array(key.split(".").length - 1).fill(false),
+      finalKey: key.split(".")[key.split(".").length - 1],
+      awaitKeys
+    }
+  }
 }
 export function addKeyEvent(key: string | string[], fn: Fn) {
-  let finalkey: string | string[];
-
   if (typeof key === "string") {
-    finalkey = key.toLowerCase()
+    pushSingleKeyStack(key, fn)
   } else if (Array.isArray(key)) {
-    finalkey = []
-    key.forEach(i => {
-      (finalkey as string[]).push(i.toLowerCase())
-    })
-  } else {
-    return
+    pushCombinationKeyStack(key.map(k => k.toLowerCase()).join("."), fn)
   }
-  for (let item of keyStack) {
-    if (JSON.stringify(item.key) === JSON.stringify(finalkey)) {
-      item.fns.push(fn)
-      return
-    }
-  }
-  keyStack.push({
-    key: key,
-    fns: [fn]
-  })
+
 }
 
-initKeyPress(handleKeypress);
-
-
-
-
-
+initKeyEvent()

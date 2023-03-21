@@ -34,6 +34,11 @@ const routes = [{
     component: () => import("../views/main_window/other_views/Ablum.vue"),
     meta: { isCache: false },
 }, {
+    path: "/collection",
+    name: "collection",
+    component: () => import("../views/main_window/other_views/Collection.vue"),
+    meta: { isCache: false },
+}, {
     path: "/artist",
     name: "artist",
     component: () => import("../views/main_window/other_views/AuthorInfo.vue"),

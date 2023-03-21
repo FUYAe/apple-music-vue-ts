@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from "@/store";
+import { useMusicStore } from "@/store";
 import { onMounted, ref, watchEffect, WatchStopHandle } from "vue";
 const props = defineProps<{
   width?: string;
@@ -23,7 +23,7 @@ const props = defineProps<{
   };
 }>();
 const emit = defineEmits(["progressChanged"]);
-const store = useStore();
+const musicStore = useMusicStore();
 let length = ref(props.width || "200px");
 let sliderloc = ref(props.loc || 0);
 const slider = ref({} as HTMLDivElement);
@@ -48,7 +48,7 @@ const onMousedown = (e: MouseEvent) => {
 const onMousemove = (e: MouseEvent) => {
   // wacthstop && wacthstop();
   setProgress(e);
-  if (!store.playing.musicSrc) return;
+  if (!musicStore.playing.musicSrc) return;
   emit("progressChanged", sliderloc.value);
 };
 const onMouseup = () => {
@@ -73,7 +73,7 @@ const clickOnBar = (e: MouseEvent) => {
   const event = new Event("mousedown");
   slider.value.dispatchEvent(event);
   setProgress(e);
-  if (!store.playing.musicSrc) return;
+  if (!musicStore.playing.musicSrc) return;
   emit("progressChanged", sliderloc.value, false);
 };
 </script>
@@ -94,11 +94,13 @@ export default {
 div {
   box-sizing: border-box;
 }
+
 .wapper {
   width: 200px;
   height: 10px;
   //   background-color: antiquewhite;
   position: absolute;
+
   .bar {
     width: calc(100% - 8px);
     height: 2px;
@@ -107,6 +109,7 @@ div {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+
     .slider {
       opacity: 0;
       position: absolute;
@@ -121,6 +124,7 @@ div {
       // transition: all 0.1s;
       // display: none;
     }
+
     .slider-left {
       position: absolute;
       background-color: rgba(60, 61, 63, 0.401);
@@ -129,7 +133,7 @@ div {
     }
   }
 }
+
 .wapper:hover .slider {
   opacity: 1;
-}
-</style>
+}</style>

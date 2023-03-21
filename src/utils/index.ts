@@ -201,3 +201,6 @@ export function getBase64ImageUrl(img: HTMLImageElement, callBack: any, imgType:
     }
 
 }
+export function formatBetween(value: number, a: number, b: number) {
+    return Math.max(a, Math.min(value, b))
+}

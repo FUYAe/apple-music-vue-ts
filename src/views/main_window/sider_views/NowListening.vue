@@ -15,11 +15,11 @@ function accessMusic() {
 const data = reactive({
   topLists: [] as any[],
 });
-
+const artists = ref()
 onMounted(async () => {
   accessMusic();
   const res = await getTop("artists", 0, 4);
-  store.bigCard = res.data.artists;
+  artists.value = res.data.artists;
 
 });
 
@@ -29,7 +29,7 @@ onMounted(async () => {
   <div class="container-listening">
     <div class="title">现在就听</div>
     <div class="content-box now-listening">
-      <BigCard v-for="item in store.bigCard" :pic="item.img1v1Url" :name="item.name" :arid="item.id"></BigCard>
+      <BigCard v-for="item in artists" :pic="item.img1v1Url" :name="item.name" :arid="item.id"></BigCard>
     </div>
     <TopList title="最近播放" :srcdata="persistStore.recents" v-if="persistStore.recents.length"></TopList>
     <template v-for="(list, outIndex) in data.topLists">

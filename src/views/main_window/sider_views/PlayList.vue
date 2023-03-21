@@ -2,18 +2,18 @@
 import { defineProps, onMounted, reactive } from "vue";
 import Image from "@/plugin/components/Image.vue";
 // const props = defineProps<{ musics: any[] }>();
-import { useStore } from "@/store";
+import { useMusicStore } from "@/store";
 import { Icon } from "@vicons/utils";
 import { IosPlay } from "@vicons/ionicons4";
-const store = useStore();
+const musicStore = useMusicStore();
 onMounted(() => { });
 const playMusic = (index: number) => {
-  store.playMusicByClick(index);
+  musicStore.playMusicByClick(index);
 };
 </script>
 <template>
   <div class="search-r">
-    <div v-for="(item, index) in store.playList" class="music-item">
+    <div v-for="(item, index) in musicStore.playQueue" class="music-item">
       <Image class="pic" :src="item.al.picUrl" alt="" srcset="" />
       <button class="play-btn">
         <Icon class="play-item" @click="playMusic(index)" size="40">

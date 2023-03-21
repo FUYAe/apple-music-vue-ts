@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getSongsByArId } from "@/axios/request";
-import { useStore } from "@/store";
+import { useMusicStore, useStore } from "@/store";
 
 import { computed } from "@vue/reactivity";
 import { onMounted, reactive } from "vue";
@@ -12,11 +12,12 @@ const props = defineProps<{
 }>();
 const router = useRouter()
 const store = useStore();
+const musicStore = useMusicStore()
 const paly1music = () => {
   getSongsByArId(props.arid).then((res) => {
     // console.log("res.data", res.data);
-    store.setPlayalist(res.data.songs);
-    store.playMusicByClick(Math.floor(Math.random() * res.data.songs.length));
+    musicStore.setPlayQueue(res.data.songs);
+    musicStore.playMusicByClick(Math.floor(Math.random() * res.data.songs.length));
   });
 };
 const gotoArInfo = () => {

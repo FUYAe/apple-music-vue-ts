@@ -33,7 +33,7 @@ const useMusicStore = defineStore("music", {
       },
       playQueue: [] as any[],
       searchResults: [] as any[],
-
+      playingId: 0,
       playing: {
         id: 0,
         isPlaying: false,
@@ -44,7 +44,6 @@ const useMusicStore = defineStore("music", {
         imgUrl: "",
         index: 0,
         currentTime: 0
-
       },
 
     }
@@ -62,7 +61,7 @@ const useMusicStore = defineStore("music", {
     }
   },
   actions: {
-    addTorecent(song: Song) {
+    addToRecent(song: Song) {
       const persist = usePersistStore(pinia)
       persist.addRecent(song)
     },
@@ -88,6 +87,7 @@ const useMusicStore = defineStore("music", {
       const target = this.playQueue[index]
       // console.log('target', target)
       this.playing.id = target.id
+      this.playingId = target.id
       this.playing.imgUrl = target.al.picUrl
       this.playing.name = target.name
       this.playing.index = index
@@ -96,7 +96,7 @@ const useMusicStore = defineStore("music", {
 
 
       this.playMusic(target.id)
-      this.addTorecent(JSON.parse(JSON.stringify(target)))
+      this.addToRecent(JSON.parse(JSON.stringify(target)))
 
     },
     async playMusicInList(index: number) {

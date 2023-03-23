@@ -14,7 +14,7 @@ import './style.scss'
 import App from './App.vue'
 import common from './components/common'
 import components from "@/plugin/components"
-import directives from '@/plugin/directives'
+import { plugin } from '@/plugin'
 // import hoverMenu from '@/plugin/HoverMenu'
 import router from "@/router"
 import { pinia } from "@/store"
@@ -39,6 +39,6 @@ const app = createApp(App)
 app.use(pinia)
 app.use(common)
 app.use(components)
-// app.use(hoverMenu)
+app.use(plugin)
 app.use(router)
 app.mount('#app')

@@ -1,61 +1,55 @@
 import { time } from "console"
 import { App, ComponentInternalInstance, createVNode, render } from "vue"
-import HoverMenu from "./HoverMenu.vue"
-function isInner(node: Element, e: MouseEvent): boolean {
+import FollowMenu from "./FollowMenu.vue"
+function isInner(node: Element, e: MouseEvent, outerMostLayer: Element = document.body): boolean {
   if (node == e.target) {
     return true
   }
-  let n: any = node
-  for (let n: any = e.target; n != document.body; n = n.parentElement) {
+  for (let n: any = e.target; n != outerMostLayer; n = n.parentElement) {
     if (n == node) {
       return true
     }
   }
   return false
 }
-export function showHoverMenu(
-  currentTarget: Element,
+export function showFollowMenu(
+  target: Element,
   userProps: {
-
-    location: {
-      x: number
-      y: number
-    },
     menus: {
       title: string
       onClick: (event: MouseEvent) => void
     }[]
   }
 ) {
-  let oldEle = document.querySelector(".hover-menu")
+  let oldEle = document.querySelector(".follow-menu")
   if (oldEle) {
-    if (oldEle.parentElement == currentTarget) {
+    if (oldEle.parentElement!.parentElement == target) {
       return
     } else {
-      oldEle.parentElement?.removeChild(oldEle)
+      oldEle.parentElement?.parentElement?.removeChild(oldEle.parentElement)
     }
   }
   const container = document.createElement("div")
-  const vnode = createVNode(HoverMenu)
+  container.style.cssText = "  height: 0px;width:0px; position: relative; "
+
+  const vnode = createVNode(FollowMenu)
   const instance = vnode.component
 
   // const { props } = instance as ComponentInternalInstance;
   vnode.props = userProps
   render(vnode, container)
-  const target = container.children[0]
-  document.body.appendChild(target)
+  target.appendChild(container)
 
 
   function control(event: MouseEvent) {
     let delay = 0
-    if (isInner(target, event)) {
+    if (isInner(container, event)) {
       delay = 200
 
     }
     setTimeout(() => {
-      document.body.removeChild(target);
-      container.remove()
       removeEventListener("click", control)
+      container.parentElement == target && target.removeChild(container);
     }, delay)
   }
 

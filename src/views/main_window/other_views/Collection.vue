@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { get } from "@/axios/request";
-import { onMounted, reactive } from "vue";
-import { useRoute } from "vue-router";
-import { useStore, usePersistStore, useMusicStore } from "@/store";
+import { usePersistStore, useMusicStore } from "@/store";
 import MusicItemBrief from "@/components/common/MusicItemBrief.vue";
 import Back from "@/components/common/Back.vue";
-import AuthorName from "@/plugin/components/AuthorName.vue";
+
 import { showPrompt, showHoverMenu } from "@/plugin";
-const route = useRoute();
-const store = useStore();
 const musicStore = useMusicStore();
 const persistStore = usePersistStore();
 
@@ -17,7 +12,7 @@ const onPlay = (index: number, data: any) => {
   musicStore.playMusicByClick(index);
 };
 const showMore = (e: MouseEvent, song: Song) => {
-  showHoverMenu(
+  showHoverMenu(e.currentTarget,
     {
       location: {
         x: e.x,
@@ -58,8 +53,8 @@ const showMore = (e: MouseEvent, song: Song) => {
     </div>
     <div class="album-list">
       <MusicItemBrief customMore @clickmore="(e) => { showMore(e, item) }" :song="item"
-        v-for="(item, index) in persistStore.collections" :name="item.name" :index="index + 1" :long="item.dt"
-        @play="onPlay(index, persistStore.collections)"></MusicItemBrief>
+        v-for="(item, index) in persistStore.collections" :au="item.ar[0].name" :name="item.name" :index="index + 1"
+        :long="item.dt" @play="onPlay(index, persistStore.collections)"></MusicItemBrief>
     </div>
   </div>
 </template>

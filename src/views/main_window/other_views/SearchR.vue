@@ -15,8 +15,7 @@ import { useMusicStore } from "@/store";
 import { Icon } from "@vicons/utils";
 import { IosPlay } from "@vicons/ionicons4";
 import { useRouter, useRoute } from "vue-router";
-import { getSearchR } from "@/axios/request";
-// import Image from "@/components/common/Image.vue";
+import { getSearchR } from "@/axios/request";;
 const musicStroe = useMusicStore();
 const router = useRouter();
 const route = useRoute();
@@ -24,19 +23,18 @@ const searchR = reactive({
   playlist: [] as Song[],
 });
 let newkw = ""
-const props = defineProps<{ query: any }>()
-onMounted(() => {
-
+const loadResult = () => {
   if (!(newkw = route.query.kw as string)) return;
   getSearchR(route.query.kw as string).then((res) => {
     searchR.playlist = res.data.result.songs;
   });
+}
+onMounted(() => {
+  loadResult()
+
 });
 onUpdated(() => {
-  if (newkw === route.query.kw as string) return
-  getSearchR(route.query.kw as string).then((res) => {
-    searchR.playlist = res.data.result.songs;
-  });
+  loadResult()
   newkw = route.query.kw as string
 })
 const playMusic = (index: number) => {
@@ -44,7 +42,7 @@ const playMusic = (index: number) => {
   musicStroe.setPlayQueue((musicStroe.playQueue = searchR.playlist));
   musicStroe.playMusicByClick(index);
 };
-const navigatorToAb = (id: number) => {
+const navigatorToAblum = (id: number) => {
   router.push({
     name: "ablum",
     query: {
@@ -52,13 +50,11 @@ const navigatorToAb = (id: number) => {
     },
   });
 };
-const slnotimg = (event: Event) => {
-  var img = event.srcElement as HTMLImageElement; img!.src = defimg; img.onerror = null;
-}
+
 </script>
 <template>
   <div class="search-r">
-    <div v-for="(item, index) in searchR.playlist" class="music-item" @click="navigatorToAb(item.al.id)">
+    <div v-for="(item, index) in searchR.playlist" class="music-item" @click="navigatorToAblum(item.al.id)">
       <Image class="pic" :src="item.al.picUrl" alt="" srcset="" />
       <Icon class="play-item" @click.stop="playMusic(index)" size="40" color="#ff0033ee">
         <IosPlay></IosPlay>

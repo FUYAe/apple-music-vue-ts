@@ -5,7 +5,7 @@ import { Icon } from "@vicons/utils";
 import { IosPlay, IosMore } from "@vicons/ionicons4";
 import { defineEmits, getCurrentInstance } from "vue";
 import IBtn from "@/plugin/components/IBtn.vue";
-import { showHoverMenu, showPrompt } from "@/plugin";
+import { showHoverMenu, showPrompt, showFollowMenu } from "@/plugin";
 import { useStore, usePersistStore, useMusicStore } from "@/store";
 const store = useStore()
 const persistStore = usePersistStore()
@@ -13,6 +13,7 @@ const emits = defineEmits(["play", "clickmore"]);
 const props = defineProps<{
   index: number;
   name: string;
+  au?: string
   long: number;
   song?: any;
   customMore?: boolean
@@ -21,40 +22,58 @@ const playMusic = () => {
   emits("play");
 };
 const musicStore = useMusicStore();
-const inst = getCurrentInstance()
+const menuOption = {
+  menus: [{
+    title: "收藏", onClick: (e: MouseEvent) => {
+      persistStore.addCollection(props.song).then(res => {
+        showPrompt({
+          msg: res.msg
+        })
+      }).catch(err => {
+        showPrompt({
+          msg: err.msg,
+          type: "err"
+        })
+      })
+
+    }
+  }, {
+    title: "下一首播放", onClick: (e: MouseEvent) => {
+
+      musicStore.playQueue.splice(musicStore.playing.index + 1, 0, props.song)
+
+    }
+  }]
+}
 const showMore = (e: MouseEvent) => {
   if (props.customMore) {
     emits("clickmore", e)
     return
   }
-  showHoverMenu(
-    {
-      location: {
-        x: e.x,
-        y: e.y
-      },
-      menus: [{
-        title: "收藏", onClick: (e: MouseEvent) => {
-          persistStore.addCollection(props.song).then(res => {
-            showPrompt({
-              msg: res.msg
-            })
-          }).catch(err => {
-            showPrompt({
-              msg: err.msg,
-              type: "err"
-            })
+  showFollowMenu(e.currentTarget as Element, {
+
+    menus: [{
+      title: "收藏", onClick: (e: MouseEvent) => {
+        persistStore.addCollection(props.song).then(res => {
+          showPrompt({
+            msg: res.msg
           })
+        }).catch(err => {
+          showPrompt({
+            msg: err.msg,
+            type: "err"
+          })
+        })
 
-        }
-      }, {
-        title: "下一首播放", onClick: (e: MouseEvent) => {
+      }
+    }, {
+      title: "下一首播放", onClick: (e: MouseEvent) => {
 
-          musicStore.playQueue.splice(musicStore.playing.index + 1, 0, props.song)
+        musicStore.playQueue.splice(musicStore.playing.index + 1, 0, props.song)
 
-        }
-      }]
-    }
+      }
+    }]
+  }
   )
 }
 </script>
@@ -67,6 +86,7 @@ const showMore = (e: MouseEvent) => {
       </Icon>
     </IBtn>
     <span class="song-name">{{ props.name }}</span>
+    <span v-if="props.au" class="song-au">{{ props.au }}</span>
     <span class="dt">{{ s_to_hs(props.long / 1000) }}</span>
     <button @click.stop="showMore">
       <Icon size="20" color="#ff0033" class="icon">
@@ -100,7 +120,11 @@ export default {
   }
 
   .song-name {
-    width: 40%;
+    width: 30%;
+  }
+
+  .song-au {
+    width: 30%;
   }
 
   .play-btn {

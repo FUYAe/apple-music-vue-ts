@@ -14,7 +14,7 @@
       <div class="albums">
 
         <AlbumItem v-for="album in artist.albums" :ablumid="album.id" :img-url="album.picUrl" :name="album.name"
-          :pubtime="String(new Date(album.publishTime).getFullYear())" @play="onPlayAtAl(album.id)"></AlbumItem>
+          :pubtime="String(new Date(album.publishTime).getFullYear())" @play="onPlayAtAlbum(album.id)"></AlbumItem>
       </div>
     </div>
     <div class="au-songs">
@@ -50,7 +50,6 @@ const artist = reactive({
   songs: [] as Song[],
   albums: [] as Album[]
 })
-const linitSongs = ref([] as Song[])
 onMounted(async () => {
   const arInfo = (await getArtistDesc(Number(route.query.id))).data
   const data = (await getArtistSongsById(Number(route.query.id))).data
@@ -60,18 +59,16 @@ onMounted(async () => {
   artist.info.ar = artist.songs[0].ar[0]
   artist.info.desc = arInfo.briefDesc
   artist.albums = albumData.hotAlbums
-  // linitSongs
 })
 const playMusic = (index: number) => {
   musicStore.playQueue = artist.songs
   musicStore.playMusicByClick(index)
 
 }
-const onPlayAtAl = (id: number) => {
+const onPlayAtAlbum = (id: number) => {
   get("/album?id=" + id).then((res) => {
     musicStore.playQueue = res.data.songs;
     musicStore.playMusicByClick(0)
-
   });
 }
 </script>

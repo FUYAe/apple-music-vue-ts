@@ -6,21 +6,23 @@ import TopList from "@/components/TopList.vue";
 const store = useStore();
 const persistStore = usePersistStore()
 
-function accessMusic() {
+async function accessMusic() {
   getTopLists().then((res) => {
     data.topLists = res.data.list.slice(0, 4);
   });
+  getTop("artists", 0, 4).then((res) => {
+    artists.value = res.data.artists;
+  });
+
 }
 
 const data = reactive({
   topLists: [] as any[],
 });
+
 const artists = ref()
 onMounted(async () => {
-  accessMusic();
-  const res = await getTop("artists", 0, 4);
-  artists.value = res.data.artists;
-
+  await accessMusic();
 });
 
 

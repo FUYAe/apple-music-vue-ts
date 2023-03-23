@@ -15,6 +15,8 @@ import WindowSider from "@/components/layout/Sider.vue";
 import { useStore } from "@/store";
 const mainContainerRef = ref<HTMLDivElement | null>(null);
 const store = useStore();
+
+
 function onDrag(e: MouseEvent) {
   const container = document.querySelector(".container") as HTMLDivElement;
   let oddStyle = window.getComputedStyle(container);

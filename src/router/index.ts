@@ -22,9 +22,9 @@ const routes = [{
 
 },
 {
-    path: "/playlist",
-    name: "playlist",
-    component: () => import("../views/main_window/sider_views/PlayList.vue"),
+    path: "/playqueue",
+    name: "playqueue",
+    component: () => import("../views/main_window/sider_views/PlayQueue.vue"),
     meta: { isCache: true }
 
 

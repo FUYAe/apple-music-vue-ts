@@ -40,7 +40,7 @@ const menus = reactive([
     title: "播放列表",
     list: [
       { id: "smalllist", img: img_smalllist, text: "所有播放列表", path: "/", disable: true, ckecked: false },
-      { id: "viewlist", img: img_viewlist, text: "播放列表", path: "/playlist", disable: false, ckecked: false },
+      { id: "viewlist", img: img_viewlist, text: "播放列表", path: "/playqueue", disable: false, ckecked: false },
     ]
   }
 

@@ -21,7 +21,7 @@ onMounted(() => {
     data.artist = res.data.album.artist;
   });
 });
-const onPlay = (index: number, data: any) => {
+const playMusic = (index: number, data: any) => {
   musicStore.setPlayQueue(data)
   musicStore.playMusicByClick(index);
 };
@@ -41,7 +41,7 @@ const onPlay = (index: number, data: any) => {
     </div>
     <div class="album-list">
       <MusicItemBrief :song="item" v-for="(item, index) in data.songs" :name="item.name" :index="index + 1"
-        :long="item.dt" @play="onPlay(index, data.songs)"></MusicItemBrief>
+        :long="item.dt" @play="playMusic(index, data.songs)"></MusicItemBrief>
     </div>
   </div>
 </template>

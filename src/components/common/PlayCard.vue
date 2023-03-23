@@ -5,7 +5,7 @@ import { useIntersectionObserver } from "@vueuse/core";
 import { useOnlyChangedOnceRef } from "@/utils";
 import { useRouter } from "vue-router";
 import Image from "@/plugin/components/Image.vue";
-import { showHoverMenu, showPrompt } from "@/plugin";
+import { showHoverMenu, showPrompt, showFollowMenu } from "@/plugin";
 const router = useRouter();
 const loadingImg = useOnlyChangedOnceRef(false);
 const props = defineProps<{
@@ -58,7 +58,7 @@ const navigatorToAbOn = () => {
 
 };
 const showMore = (e: MouseEvent) => {
-  showHoverMenu(
+  showHoverMenu(e.currentTarget as Element,
     {
       location: {
         x: e.x,
@@ -86,6 +86,31 @@ const showMore = (e: MouseEvent) => {
       }]
     }
   )
+  // showFollowMenu(
+  //   e.currentTarget as any,
+  //   {
+  //     menus: [{
+  //       title: "收藏歌曲", onClick: (e: MouseEvent) => {
+  //         persistStore.addCollection(props.song).then(res => {
+  //           showPrompt({
+  //             msg: res.msg
+  //           })
+  //         }).catch(err => {
+  //           showPrompt({
+  //             msg: err.msg,
+  //             type: "err"
+  //           })
+  //         })
+  //       }
+  //     }, {
+  //       title: "下一首播放", onClick: (e: MouseEvent) => {
+
+  //         musicStore.playQueue.splice(musicStore.playing.index + 1, 0, props.song)
+
+  //       }
+  //     }]
+  //   }
+  // )
 }
 </script>
 <template>

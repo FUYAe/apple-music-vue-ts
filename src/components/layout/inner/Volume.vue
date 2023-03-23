@@ -29,7 +29,7 @@ const setVolume = (volVal: number) => {
       <VolumeOff v-else></VolumeOff>
     </Icon>
     <div class="slider">
-      <input class="input-range2" type="range" min="0" max="100" v-model="configStore.getVolume" />
+      <input class="input-range2" type="range" min="0" max="100" v-model="configStore.volume" />
     </div>
     <Icon @click="setVolume(100)" size="20" class="icon-header volume-up">
       <VolumeMedium></VolumeMedium>

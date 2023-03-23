@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { useMusicStore } from "@/store";
-import { ref } from "vue";
 import Lyric from "../../components/Lyric.vue";
 
 const musicStore = useMusicStore();
-const closeLyric = () => {
+const closeLyricWindow = () => {
   musicStore.lyricControl.isShowLyric = false;
 };
 </script>
 <template>
   <Teleport to="#app">
-    <Window @out="closeLyric">
+    <Window @out="closeLyricWindow">
       <div v-bind="$attrs" class="lyric" :style="{
         backdropFilter: 'blur(6px)',
       }">

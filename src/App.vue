@@ -8,9 +8,8 @@ import Control from "@/views/insert/Control.vue";
 import MiniPlayer from "@/views/window/MiniPlayer.vue";
 import BodyLyric from "@/views/insert/BodyLyric.vue";
 import { addKeyEvent } from "@/utils/keyControl"
-import { useStore, usePersistStore, useConfigStore, useMusicStore } from "@/store";
+import { useStore, useConfigStore, useMusicStore } from "@/store";
 const store = useStore()
-const persistStore = usePersistStore()
 const configStore = useConfigStore()
 const musicStore = useMusicStore()
 

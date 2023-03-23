@@ -2,7 +2,7 @@
 import { useStore, usePersistStore, useConfigStore, useMusicStore } from "@/store";
 import { computed } from "@vue/reactivity";
 import { storeToRefs } from "pinia"
-import { onMounted, onUnmounted, onUpdated, reactive, ref, watch, watchEffect } from "vue";
+import { onMounted, onUnmounted, onUpdated, reactive, ref, watch, watchEffect, toRef } from "vue";
 const store = useStore();
 const musicStore = useMusicStore()
 const configStore = useConfigStore()
@@ -76,17 +76,17 @@ const getCurrentLrcIndex = (crt: number, times: number[]) => {
 }
 
 
-const { currentLrcIndex } = storeToRefs(musicStore)
+const { currentLrcIndex, playingId } = storeToRefs(musicStore)
 onMounted(async () => {
   await musicStore.setLyric()
 
   bgBlurRef.value.addEventListener("mouseover", onMoveover);
   bgBlurRef.value.addEventListener("mouseout", onMoveout);
-  const lis = document.querySelectorAll(".lyricli");
+  lis = document.querySelectorAll(".lyricli") as any;
   let heights: number[] = []
 
 
-  watch(currentLrcIndex, () => {
+  watch(currentLrcIndex, (newVal, oldVal) => {
     if (!(bgBlurRef.value instanceof Element)) return;
     const bgBlurStyle = window.getComputedStyle(bgBlurRef.value);
     if (heights.length == 0) {
@@ -94,60 +94,35 @@ onMounted(async () => {
         heights[i] = parseFloat(getComputedStyle(lis[i]).height)
       }
     }
-    lyricInfo.value.currentHeight = currentLrcIndex.value * 10 + 40 + heights.slice(0, currentLrcIndex.value).reduce(function (prev, curr, idx, arr) {
-      return prev + curr;
-    });
+    let curentHavingSeeingItems = heights.slice(0, currentLrcIndex.value)
+    if (curentHavingSeeingItems.length !== 0 && curentHavingSeeingItems) {
+      lyricInfo.value.currentHeight = currentLrcIndex.value * 10 + 40 + heights.slice(0, currentLrcIndex.value).reduce(function (prev, curr, idx, arr) {
+        return prev + curr;
+      });
+    }
     let bgHight = parseFloat(bgBlurStyle.height);
+    if (!(lis.length === 0 || newVal >= lis.length)) {
+      lis = document.querySelectorAll(".lyricli") as unknown as HTMLLIElement[]
+      lis[oldVal || 0].classList.remove("is-active")
+      lis[newVal].classList.add("is-active")
+
+    }
     ulOfLrcRef.value.style.transform = "translateY(" + (bgHight / 2 - lyricInfo.value.currentHeight) + "px)"
+
   });
-  // lis = document.querySelectorAll(".lyricall>li") as unknown as HTMLLIElement[]
-  let timer: any = null
+
   interval = setInterval(() => {
-
-
-
     if (musicStore.getLyric.length === 0) return
     if (musicStore.getLyric[currentLrcIndex.value] === undefined) return
     let crt = musicStore.playing.currentTime
     currentLrcIndex.value = getCurrentLrcIndex(crt, musicStore.lyricInfo.times)
-    // if (crt >= old) {
-
-    //   if (store.lyric[currentLrcIndex.value][0] <= crt) {
-    //     if (store.lyric.lenght == currentLrcIndex.value) return
-    //     currentLrcIndex.value++
-    //   }
-    // } else {
-    //   if (store.lyric[currentLrcIndex.value][0] > crt) {
-    //     if (store.lyric.lenght == currentLrcIndex.value) return
-    //     currentLrcIndex.value--
-    //     return
-    //   }
-    // }
-    // if (store.lyric[currentLrcIndex.value][0] - 2 > crt) {
-    //   if (currentLrcIndex.value == 0) return
-    //   currentLrcIndex.value--
-    // }
     old = musicStore.playing.currentTime
   }
   )
 
-
-  watch(currentLrcIndex, (newVal, oldVal) => {
-    if (lis.length === 0 || newVal >= lis.length) {
-      return
-    }
-    lis[oldVal || 0].classList.remove("is-active")
-
-    lis[newVal].classList.add("is-active")
-
-
-
-
-  }, { immediate: true })
-
 })
-onUpdated(() => {
-  lis = document.querySelectorAll(".lyricall>li") as unknown as HTMLLIElement[]
+watch(playingId, () => {
+  lis = document.querySelectorAll(".lyricli") as unknown as HTMLLIElement[]
 })
 onUnmounted(() => {
   clearInterval(interval)
